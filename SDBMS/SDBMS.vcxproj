@@ -115,10 +115,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ClassRoomData.h" />
     <ClInclude Include="SDBMS_BASE_CLASS.h" />
     <ClInclude Include="StudentData.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClassRoomData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SDBMS_BASE_CLASS.cpp" />
     <ClCompile Include="StudentData.cpp" />
