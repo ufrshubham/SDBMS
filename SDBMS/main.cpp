@@ -82,9 +82,6 @@ void AddNewClass()
     std::cout << "Adding new class room data" << std::endl;
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
-    SDBMS::ClassRoomData classRoomData;
-    std::deque<SDBMS::StudentData> studentDataList;
-
     int classRoomNumber,
         numberOfStudents;
 
@@ -96,28 +93,27 @@ void AddNewClass()
     std::cout << "Enter number of students: ";
     std::cin >> numberOfStudents;
 
-    classRoomData.SetClassRoomNumber(classRoomNumber);
-    classRoomData.SetNumberOfStudents(numberOfStudents);
+    //This will create classRoomData and will set the class room number 
+    //and number of students to values provided by user.
+    SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
 
-    //Ask user if he wants to enter data of user right now
-    //This is done because users can choose to first add dummy
-    //class room and later use Edit class room data option
-    //to add student data to it.
+    //Ask user if he wants to enter data of user right now. This is done 
+    //because users can choose to first add dummy class room and later use 
+    //Edit class room data option to add student data to it.
     std::cout << "Do you want to add student data now(y/n)?";
     std::cin >> addStudentData;
 
     if (addStudentData == 'y' || addStudentData == 'Y')
     {
-        //Push the student data into studentDataList
-        for (int i = 0; i < numberOfStudents; ++i)
+        //Since we have already initialized classRoomData with classRoomNumber and numberOfStudents,
+        //as well as m_studentData inside classRoomData is also initialized with class room number and
+        //roll numbers, here we just have to get name and subject marks of each student.
+        //So here, classRoomData.GetStudentsData() will return the m_studentData deque stored in classRoomData
+        //and we will loop over it and call FillStudentData() for each of it's element
+        for (auto itr = classRoomData.GetStudentsData()->begin(); itr != classRoomData.GetStudentsData()->end(); ++itr)
         {
-            //Here we are calling StudentData's constructor by passing a true flag
-            //This flag will tell the constructor to get data for construction from
-            //console
-            studentDataList.push_back(SDBMS::StudentData(true));
+            itr->FillStudentData();
         }
-
-        classRoomData.SetStudentsData(studentDataList);
     }
 
     //Push this classRoomData into out globalDataManager

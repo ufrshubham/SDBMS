@@ -2,23 +2,25 @@
 #include <iostream>
 #include "SubjectMarks.h"
 
-SDBMS::StudentData::StudentData(bool init)
+SDBMS::StudentData::StudentData(int classRoomNumber) : m_classRoomNumber(classRoomNumber)
 {
-    //increase roll number for every construction
-    ++m_rollNumber;
-
     m_marks = { 0 };
-
-    //if init is true get the data from console for construction
-    if (init)
-    {
-        FillStudentData();
-    }
+    m_rollNumber = 0;
 }
 
 
 SDBMS::StudentData::~StudentData()
 {
+}
+
+int SDBMS::StudentData::GetRollNumber()
+{
+    return m_rollNumber;
+}
+
+void SDBMS::StudentData::SetRollNumber(const int rollNumber)
+{
+    m_rollNumber = rollNumber;
 }
 
 std::string SDBMS::StudentData::GetName()
@@ -31,15 +33,25 @@ void SDBMS::StudentData::SetName(const std::string name)
     m_name = name;
 }
 
+int SDBMS::StudentData::GetClassRoomNumer()
+{
+    return m_classRoomNumber;
+}
+
+void SDBMS::StudentData::SetClassRoomNumber(const int classRoomNumber)
+{
+    m_classRoomNumber = classRoomNumber;
+}
+
 SDBMS::SubjectMarks SDBMS::StudentData::GetSubjectMarks()
 {
     SDBMS::SubjectMarks subMarks{ 
-                           m_marks.mEnglish,
-                           m_marks.mPhysics,
-                           m_marks.mChemistry,
-                           m_marks.mMaths,
-                           m_marks.mCompSci
-                         };
+                                  m_marks.mEnglish,
+                                  m_marks.mPhysics,
+                                  m_marks.mChemistry,
+                                  m_marks.mMaths,
+                                  m_marks.mCompSci
+                                };
     return subMarks;
 }
 
