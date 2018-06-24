@@ -33,6 +33,8 @@ int main()
     while (choice != SDBMS::MainMenu_Invalid_Choice)
     {
         choice = MainMenu();
+        
+        std::clear()
 
         switch (choice)
         {
@@ -111,7 +113,7 @@ void AddNewClass()
 
     char addStudentData;
 
-    std::cout << "Enter ClassRoom number: ";
+    std::cout << "Enter class room number: ";
     std::cin >> classRoomNumber;
 
     std::cout << "Enter number of students: ";
@@ -145,7 +147,6 @@ void AddNewClass()
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "New class room data added succesfully" << std::endl;
-    std::cout << "-------------------------------------------------------------------------" << std::endl;
 }
 
 void EditExisitingClass()
@@ -192,7 +193,6 @@ void EditExisitingClass()
     {
         std::cout << "Invalid class room entered. Returing to Main Menu." << std::endl;
     }
-    std::cout << "-------------------------------------------------------------------------" << std::endl;
 }
 
 //used to delete exisiting class room data from globalDataManager
@@ -209,12 +209,13 @@ void DeleteExisitingClass()
     //Get class room numbers from user to be deleted
     //Here I am getting it in the form of a string to allow
     //deleting of multiple class room records at once
-    std::cout << "Enter class room number to delete: " << std::endl;
+    std::cout << "Enter class room number to delete: ";
+    std::cin.ignore();
     std::getline(std::cin, deleteClassRoomNumber);
 
     //This loop is written to seperate out class room numbers for
     //user provided input seperated by blank space
-    for (int i = 0, j = 0; i < deleteClassRoomNumber.length(); ++i)
+    for (int i = 0, j = 0; i < deleteClassRoomNumber.length() + 1; ++i)
     {
         if (std::isdigit(deleteClassRoomNumber[i]))
         {

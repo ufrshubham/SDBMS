@@ -64,23 +64,23 @@ void SDBMS::StudentData::FillStudentData()
 {
     SDBMS::SubjectMarks subMarks = { 0 };
 
-    std::cout << "Student " << m_rollNumber << " name: ";
+    std::cout << "\tStudent " << m_rollNumber << " name: ";
     std::cin >> m_name;
 
-    std::cout << "Enter marks:" << std::endl;
-    std::cout << "English: ";
+    std::cout << "\tEnter marks:" << std::endl;
+    std::cout << "\t\tEnglish: ";
     std::cin >> subMarks.mEnglish;
 
-    std::cout << "Physics: ";
+    std::cout << "\t\tPhysics: ";
     std::cin >> subMarks.mPhysics;
 
-    std::cout << "Chemistry: ";
+    std::cout << "\t\tChemistry: ";
     std::cin >> subMarks.mChemistry;
 
-    std::cout << "Maths: ";
+    std::cout << "\t\tMaths: ";
     std::cin >> subMarks.mMaths;
 
-    std::cout << "Computer Science: ";
+    std::cout << "\t\tComputer Science: ";
     std::cin >> subMarks.mCompSci;
 
     SetSubjectMarks(subMarks);
