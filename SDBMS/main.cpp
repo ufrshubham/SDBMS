@@ -6,12 +6,16 @@
 #include <deque>
 #include <cctype>
 #include <set>
+#include <algorithm>
 
 SDBMS::MainMenuOptions MainMenu();
+SDBMS::EditMenuOptions EditMenu();
+
 void AddNewClass();
+void EditExisitingClass();
 void DeleteExisitingClass();
 void InitGlobalDataManager();
-std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::set<int> deleteSet);
+std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
 
 //This deque will be our doubly linked list which will store
 //all the class room data. This will hold on to the data in current
@@ -25,7 +29,7 @@ int main()
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
 
     //Keep going untill user enters invalid choice
-    while (choice != SDBMS::Invalid_Choice)
+    while (choice != SDBMS::MainMenu_Invalid_Choice)
     {
         choice = MainMenu();
 
@@ -35,6 +39,7 @@ int main()
             AddNewClass();
             break;
         case SDBMS::Edit_Class_Data:
+            EditExisitingClass();
             break;
         case SDBMS::Delete_Class_Data:
             DeleteExisitingClass();
@@ -46,7 +51,7 @@ int main()
         case SDBMS::Exit_No_Save:
             break;
         default:
-            choice = SDBMS::Invalid_Choice;
+            choice = SDBMS::MainMenu_Invalid_Choice;
             break;
         }
     }
@@ -73,6 +78,24 @@ SDBMS::MainMenuOptions MainMenu()
     mainMenu.DisplayMenu();
 
     return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
+}
+
+SDBMS::EditMenuOptions EditMenu()
+{
+    SDBMS::Menu editMenu;
+
+    std::vector<std::string> optionsList;
+
+    optionsList.push_back("Add new student data");
+    optionsList.push_back("Edit existing student data");
+    optionsList.push_back("Delete exisiting student data");
+    optionsList.push_back("Edit");
+
+    editMenu.SetOptionsList(optionsList);
+    editMenu.SetMenuName("Edit Menu");
+    editMenu.DisplayMenu();
+
+    return static_cast<SDBMS::EditMenuOptions>(editMenu.GetChoice());
 }
 
 //used to create a new class object
@@ -124,6 +147,51 @@ void AddNewClass()
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 }
 
+void EditExisitingClass()
+{
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+    std::cout << "Editing existing class room data" << std::endl;
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+
+    int classRoomNumberToEdit = 0;
+
+    std::cout << "Enter class room number to edit: " << std::endl;
+    std::cin >> classRoomNumberToEdit;
+
+    auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumberToEdit));
+
+    //If the itrList is empty that means we did not find the data
+    if (!itrList.empty())
+    {
+        SDBMS::EditMenuOptions choice = SDBMS::Exit;
+
+        choice = EditMenu();
+
+        while (choice != SDBMS::Edit_Invalid_Choice)
+        {
+            switch (choice)
+            {
+            case SDBMS::Add_Student_Data:
+                break;
+            case SDBMS::Edit_Student_Data:
+                break;
+            case SDBMS::Delete_Student_Data:
+                break;
+            case SDBMS::Exit:
+                break;
+            default:
+                choice = SDBMS::Edit_Invalid_Choice;
+                break;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Invalid class room entered. Returing to Main Menu." << std::endl;
+    }
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+}
+
 //used to delete exisiting class room data from globalDataManager
 void DeleteExisitingClass()
 {
@@ -132,7 +200,7 @@ void DeleteExisitingClass()
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
     std::string deleteClassRoomNumber;
-    std::set<int> deleteSet;
+    std::vector<int> deleteVector;
     char choice;
 
     //Get class room numbers from user to be deleted
@@ -151,12 +219,12 @@ void DeleteExisitingClass()
         }
         else if (deleteClassRoomNumber[i] != ' ' || deleteClassRoomNumber[i] != '\n')
         {
-            deleteSet.insert(std::stoi(deleteClassRoomNumber.substr(j,i-j)));
+            deleteVector.push_back(std::stoi(deleteClassRoomNumber.substr(j,i-j)));
             j = i;
         }
     }
 
-    auto itrList = ClassRoomLocator(deleteSet);
+    auto itrList = ClassRoomLocator(deleteVector);
 
     std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
     std::cin >> choice;
@@ -179,7 +247,7 @@ void InitGlobalDataManager()
 
 //This function will traverse through the globalDataManager and find the desired class room number
 //Then it will return the iterators to those class room data in globalDataManager
-std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::set<int> deleteSet)
+std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector)
 {
     std::set<std::deque<SDBMS::ClassRoomData>::iterator> itrList;
 
@@ -187,11 +255,10 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::set<i
     for (auto itr = globalDataManager.begin(); itr != globalDataManager.end(); ++itr)
     {
         //if class room number of current class room data in globalDataManager is
-        //also found in deleteSet then count will return 1. 
-        if (deleteSet.count(itr->GetClassRoomNumber()))
+        //also found in deleteVector then insert it in itrList. 
+        if (std::find(deleteVector.begin(), deleteVector.end(), itr->GetClassRoomNumber()) != deleteVector.end())
         {
-            //as the class room number is found in deleteSet we will store the
-            //iterator in itrList
+            //as the class room number is found in deleteVector we will store the iterator in itrList
             itrList.insert(itr);
         }
     }

@@ -24,13 +24,13 @@
     <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDBMS_Utilities.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="StudentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SubjectMarks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDBMS_Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,15 @@ namespace SDBMS
         Save,
         Save_Exit,
         Exit_No_Save,
-        Invalid_Choice
+        MainMenu_Invalid_Choice
+    };
+
+    enum EditMenuOptions
+    {
+        Add_Student_Data = 1,
+        Edit_Student_Data,
+        Delete_Student_Data,
+        Exit,
+        Edit_Invalid_Choice
     };
 }
