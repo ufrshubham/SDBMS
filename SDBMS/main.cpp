@@ -33,8 +33,6 @@ int main()
     while (choice != SDBMS::MainMenu_Invalid_Choice)
     {
         choice = MainMenu();
-        
-        std::clear()
 
         switch (choice)
         {
