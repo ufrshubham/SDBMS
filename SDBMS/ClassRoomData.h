@@ -30,7 +30,9 @@ namespace SDBMS
         void SetMaxRollNumber(const int maxRollNumber); //used to set the max roll number in this class room
 
         std::deque<StudentData>* GetStudentsData();           //used to get the data of all the students in this class room
-        void SetStudentsData(const std::deque<StudentData>); //used to set the data of all the students in this class room
+        void SetStudentsData(const std::deque<StudentData>);  //used to set the data of all the students in this class room
+
+        std::deque<StudentData>::iterator FindStudent(int rollNumber); //used to find the iterator to student data of given roll number
     };
 }
 

@@ -43,16 +43,9 @@ void SDBMS::StudentData::SetClassRoomNumber(const int classRoomNumber)
     m_classRoomNumber = classRoomNumber;
 }
 
-SDBMS::SubjectMarks SDBMS::StudentData::GetSubjectMarks()
+SDBMS::SubjectMarks* SDBMS::StudentData::GetSubjectMarks()
 {
-    SDBMS::SubjectMarks subMarks{ 
-                                  m_marks.mEnglish,
-                                  m_marks.mPhysics,
-                                  m_marks.mChemistry,
-                                  m_marks.mMaths,
-                                  m_marks.mCompSci
-                                };
-    return subMarks;
+    return &m_marks;
 }
 
 void SDBMS::StudentData::SetSubjectMarks(const SDBMS::SubjectMarks subMarks)

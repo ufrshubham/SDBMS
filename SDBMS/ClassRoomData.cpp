@@ -65,3 +65,17 @@ void SDBMS::ClassRoomData::SetStudentsData(const std::deque<SDBMS::StudentData> 
 {
     m_studentData = studData;
 }
+
+std::deque<SDBMS::StudentData>::iterator SDBMS::ClassRoomData::FindStudent(int rollNumber)
+{
+    std::deque<SDBMS::StudentData>::iterator itr = m_studentData.end();
+
+    for (auto i = m_studentData.begin(); i != m_studentData.end(); ++i)
+    {
+        if (i->GetRollNumber() == rollNumber)
+        {
+            itr = i;
+        }
+    }
+    return itr;
+}

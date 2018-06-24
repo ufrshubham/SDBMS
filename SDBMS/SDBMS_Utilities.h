@@ -21,4 +21,15 @@ namespace SDBMS
         Exit,
         Edit_Invalid_Choice
     };
+
+    enum EditStudentDataOptions
+    {
+        Edit_Name = 1,
+        Edit_Eng,
+        Edit_Phy,
+        Edit_Chem,
+        Edit_Math,
+        Edit_CompSci,
+        Edit_Student_Data_Invalid
+    };
 }

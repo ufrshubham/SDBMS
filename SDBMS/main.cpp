@@ -10,12 +10,16 @@
 
 SDBMS::MainMenuOptions MainMenu();
 SDBMS::EditMenuOptions EditMenu();
+SDBMS::EditStudentDataOptions EditStudentDataMenu();
 
 void AddNewClass();
 void EditExisitingClass();
 void DeleteExisitingClass();
 void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
+void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
 void InitGlobalDataManager();
+int GetNewMarks();
+std::deque<SDBMS::StudentData>::iterator StudentLocator(std::deque<SDBMS::StudentData> studentsData, int rollNumberToEdit);
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
 
 //This deque will be our doubly linked list which will store
@@ -29,7 +33,7 @@ int main()
 
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
 
-    //Keep going untill user enters invalid choice
+    //Keep going until user enters invalid choice
     while (choice != SDBMS::MainMenu_Invalid_Choice)
     {
         choice = MainMenu();
@@ -97,6 +101,27 @@ SDBMS::EditMenuOptions EditMenu()
     editMenu.DisplayMenu();
 
     return static_cast<SDBMS::EditMenuOptions>(editMenu.GetChoice());
+}
+
+SDBMS::EditStudentDataOptions EditStudentDataMenu()
+{
+    SDBMS::Menu editStudentDataMenu;
+
+    std::vector<std::string> optionsList;
+
+    optionsList.push_back("Edit name");
+    optionsList.push_back("Edit English marks");
+    optionsList.push_back("Edit Physics marks");
+    optionsList.push_back("Edit Chemistry marks");
+    optionsList.push_back("Edit Maths marks");
+    optionsList.push_back("Edit Computer Science marks");
+    
+
+    editStudentDataMenu.SetOptionsList(optionsList);
+    editStudentDataMenu.SetMenuName("Edit Student Data Menu");
+    editStudentDataMenu.DisplayMenu();
+
+    return static_cast<SDBMS::EditStudentDataOptions>(editStudentDataMenu.GetChoice());
 }
 
 //used to create a new class object
@@ -176,10 +201,14 @@ void EditExisitingClass()
                 choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Edit_Student_Data:
+                EditExisitingStudentData(itrList);
+                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Delete_Student_Data:
+                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Exit:
+                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             default:
                 choice = SDBMS::Edit_Invalid_Choice;
@@ -244,10 +273,14 @@ void DeleteExisitingClass()
 //Adds a new student data to the current class room
 void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
-    //Since we allow addition of a new student to a single class room at a time
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+    std::cout << "Adding new student data" << std::endl;
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+
+    //Since we allow addition/edit of a single student to a single class room at a time
     //we can be sure that classRoomItr set will have only one iterator in it.
     //This iterator will be located at the begining. So we get pointer to current 
-    //class from set of iterator
+    //class room from set of iterator
     auto currentClassRoom = *classRoomItr.begin();
 
     int currentRollNumber = currentClassRoom->GetMaxRollNumber();
@@ -266,10 +299,115 @@ void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> clas
     currentClassRoom->SetMaxRollNumber(currentClassRoom->GetMaxRollNumber() + 1);
 }
 
+void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
+{
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+    std::cout << "Editing existing student data" << std::endl;
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+
+    int rollNumberToEdit = 0;
+    SDBMS::EditStudentDataOptions choice = SDBMS::Edit_Name;
+
+    //Since we allow addition/edit of a single student to a single class room at a time
+    //we can be sure that classRoomItr set will have only one iterator in it.
+    //This iterator will be located at the begining. So we get pointer to current 
+    //class room from set of iterator
+    auto currentClassRoom = *classRoomItr.begin();
+
+    //Display data in current class room to user
+    std::cout << "Class Room Number: " << currentClassRoom->GetClassRoomNumber() << std::endl;
+    std::cout << "Student Data: " << std::endl;
+
+    auto studentsData = currentClassRoom->GetStudentsData();
+    for (auto itr = studentsData->begin(); itr != studentsData->end(); ++itr)
+    {
+        std::cout << "\t" << itr->GetRollNumber() << " " << itr->GetName() << std::endl;
+    }
+
+    //Take input roll number from user
+    std::cout << "Enter roll number of student whose data is to be edited: ";
+    std::cin >> rollNumberToEdit;
+
+    //Search this roll number in currentClassRoom's m_studentData deque using FindStudent()
+    auto itr = currentClassRoom->FindStudent(rollNumberToEdit);
+
+    //If user enters invaild roll number we might not find it in m_studentData
+    if (itr != currentClassRoom->GetStudentsData()->end())
+    {
+        //Show student edit menu and get choice
+        choice = EditStudentDataMenu();
+
+        while (choice != SDBMS::Edit_Student_Data_Invalid)
+        {
+            std::string newName = "";
+
+            switch (choice)
+            {
+            case SDBMS::Edit_Name:
+                std::cout << "Enter new name: ";
+                std::cin.ignore();
+                std::getline(std::cin, newName);
+                itr->SetName(newName);
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            case SDBMS::Edit_Eng:
+                itr->GetSubjectMarks()->mEnglish = GetNewMarks();
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            case SDBMS::Edit_Phy:
+                itr->GetSubjectMarks()->mPhysics = GetNewMarks();
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            case SDBMS::Edit_Chem:
+                itr->GetSubjectMarks()->mChemistry = GetNewMarks();
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            case SDBMS::Edit_Math:
+                itr->GetSubjectMarks()->mMaths = GetNewMarks();
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            case SDBMS::Edit_CompSci:
+                itr->GetSubjectMarks()->mCompSci = GetNewMarks();
+                std::cout << "Edit Successful" << std::endl;
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+
+            default:
+                choice = SDBMS::Edit_Student_Data_Invalid;
+                break;
+            }
+        }
+    }
+}
+
 void InitGlobalDataManager()
 {
     //Will be implemented later. This function will read the binary file that we will store
     //and then will filling the data from it into globalDataManager
+}
+
+int GetNewMarks()
+{
+    int newMarks = 0;
+    std::cout << "Enter new marks: ";
+    std::cin >> newMarks;
+    return newMarks;
+}
+
+std::deque<SDBMS::StudentData>::iterator StudentLocator(std::deque<SDBMS::StudentData> studentsData, int rollNumberToEdit)
+{
+
+    return std::deque<SDBMS::StudentData>::iterator();
 }
 
 //This function will traverse through the globalDataManager and find the desired class room number

@@ -29,7 +29,7 @@ namespace SDBMS
         int GetClassRoomNumer();           //used to get the class room number of current student
         void SetClassRoomNumber(const int); //used to set the class room number of current student
 
-        SubjectMarks GetSubjectMarks();           //used to get all subject marks of current student
+        SubjectMarks* GetSubjectMarks();           //used to get all subject marks of current student
         void SetSubjectMarks(const SubjectMarks); //used to set all subject marks of current student
 
         void FillStudentData(); //used to get data from console
