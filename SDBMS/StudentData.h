@@ -17,7 +17,7 @@ namespace SDBMS
         SubjectMarks m_marks;    //stores the marks of all subjects of current student
 
     public:
-        StudentData(int classRoomNumber); //used to construct and set the class room number of current student
+        StudentData(int classRoomNumber, int rollNumber = 0); //used to construct and set the class room number of current student
         ~StudentData();
 
         int GetRollNumber();           //used to get the roll number of current student

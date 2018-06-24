@@ -2,10 +2,10 @@
 #include <iostream>
 #include "SubjectMarks.h"
 
-SDBMS::StudentData::StudentData(int classRoomNumber) : m_classRoomNumber(classRoomNumber)
+SDBMS::StudentData::StudentData(int classRoomNumber, int rollNumber) : m_classRoomNumber(classRoomNumber)
 {
     m_marks = { 0 };
-    m_rollNumber = 0;
+    m_rollNumber = rollNumber;
 }
 
 

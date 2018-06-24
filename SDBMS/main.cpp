@@ -14,6 +14,7 @@ SDBMS::EditMenuOptions EditMenu();
 void AddNewClass();
 void EditExisitingClass();
 void DeleteExisitingClass();
+void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
 void InitGlobalDataManager();
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
 
@@ -172,6 +173,8 @@ void EditExisitingClass()
             switch (choice)
             {
             case SDBMS::Add_Student_Data:
+                AddNewStudentData(itrList);
+                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Edit_Student_Data:
                 break;
@@ -237,6 +240,31 @@ void DeleteExisitingClass()
             globalDataManager.erase(i);
         }
     }
+}
+
+//Adds a new student data to the current class room
+void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
+{
+    //Since we allow addition of a new student to a single class room at a time
+    //we can be sure that classRoomItr set will have only one iterator in it.
+    //This iterator will be located at the begining. So we get pointer to current 
+    //class from set of iterator
+    auto currentClassRoom = *classRoomItr.begin();
+
+    int currentRollNumber = currentClassRoom->GetMaxRollNumber();
+    int currentClassRoomNumber = currentClassRoom->GetClassRoomNumber();
+    
+    //We will construct a newStudent using currentClassRoomNumber and 1+currentRollNumber
+    SDBMS::StudentData newStudent(currentClassRoomNumber, ++currentRollNumber);
+
+    //Calling FillStudentData() on newStudent so that we can get the name and marks
+    newStudent.FillStudentData();
+
+    //Push back this newStudent in m_studentData deque stored in currentClassRoom
+    //Also increment the number of students and max roll number in currentClassRoom by 1
+    currentClassRoom->GetStudentsData()->push_back(newStudent);
+    currentClassRoom->SetNumberOfStudents(currentClassRoom->GetNumberOfStudents() + 1);
+    currentClassRoom->SetMaxRollNumber(currentClassRoom->GetMaxRollNumber() + 1);
 }
 
 void InitGlobalDataManager()

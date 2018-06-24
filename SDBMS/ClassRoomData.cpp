@@ -46,6 +46,16 @@ void SDBMS::ClassRoomData::SetNumberOfStudents(const int numberOfStudent)
     m_numberOfStudents = numberOfStudent;
 }
 
+int SDBMS::ClassRoomData::GetMaxRollNumber()
+{
+    return m_maxRollNumber;
+}
+
+void SDBMS::ClassRoomData::SetMaxRollNumber(const int maxRollNumber)
+{
+    m_maxRollNumber = maxRollNumber;
+}
+
 std::deque<SDBMS::StudentData>* SDBMS::ClassRoomData::GetStudentsData()
 {
     return &m_studentData;
