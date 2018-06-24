@@ -16,11 +16,12 @@ namespace SDBMS
     class StudentData :
         public SDBMS_BASE_CLASS
     {
+        static int m_rollNumber;
         std::string m_name;
         subjectMarks m_marks;
 
     public:
-        StudentData();
+        StudentData(bool init = false);
         ~StudentData();
 
         std::string GetName();
@@ -28,6 +29,8 @@ namespace SDBMS
 
         subjectMarks GetSubjectMarks();
         void SetSubjectMarks(const subjectMarks);
+
+        void FillStudentData();
     };
 }
 
