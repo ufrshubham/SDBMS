@@ -120,6 +120,7 @@
     <ClInclude Include="SDBMS_BASE_CLASS.h" />
     <ClInclude Include="SDBMS_Utilities.h" />
     <ClInclude Include="StudentData.h" />
+    <ClInclude Include="SubjectMarks.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassRoomData.cpp" />

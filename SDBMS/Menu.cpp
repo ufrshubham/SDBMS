@@ -4,6 +4,7 @@
 
 void SDBMS::Menu::CheckValidity()
 {
+    //Check is the optionsList and menuName are set or not
     if (!m_optionsList.empty() && (m_menuName.size() != 0))
     {
         m_isValidToCreate = true;
@@ -13,6 +14,8 @@ void SDBMS::Menu::CheckValidity()
 
 SDBMS::Menu::Menu()
 {
+    //By default validaity of current object will be false
+    //and choice will be set to 0
     m_isValidToCreate = false;
     m_choice = 0;
 }
@@ -22,9 +25,9 @@ SDBMS::Menu::~Menu()
 {
 }
 
-std::string SDBMS::Menu::GetOptionsList()
+std::vector<std::string> SDBMS::Menu::GetOptionsList()
 {
-    return std::string();
+    return m_optionsList;
 }
 
 void SDBMS::Menu::SetOptionsList(const std::vector<std::string> optionsList)
@@ -44,8 +47,11 @@ void SDBMS::Menu::SetMenuName(const std::string menuName)
 
 void SDBMS::Menu::DisplayMenu()
 {
+    //First check validity of current menu object.
+    //This will set the m_isValidToCreate accordingly
     CheckValidity();
 
+    //Display only if valid
     if (m_isValidToCreate)
     {
         std::cout << "-------------------------------------------------------------------------" << std::endl;

@@ -11,6 +11,7 @@ int main()
 {
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
 
+    //Keep going untill user enters invalid choice
     while (choice != SDBMS::Invalid_Choice)
     {
         choice = MainMenu();
@@ -39,6 +40,7 @@ int main()
     return 0;
 }
 
+//creates object of Menu class, displays it and return user input
 SDBMS::MainMenuOptions MainMenu()
 {
     SDBMS::Menu mainMenu;
@@ -59,6 +61,7 @@ SDBMS::MainMenuOptions MainMenu()
     return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
 }
 
+//used to create a new class object
 void AddNewClass()
 {
     std::cout << "-------------------------------------------------------------------------" << std::endl;
@@ -82,13 +85,21 @@ void AddNewClass()
     classRoomData.SetClassRoomNumber(classRoomNumber);
     classRoomData.SetNumberOfStudents(numberOfStudents);
 
+    //Ask user if he wants to enter data of user right now
+    //This is done because users can choose to first add dummy
+    //class room and later use Edit class room data option
+    //to add student data to it.
     std::cout << "Do you want to add student data now(y/n)?";
     std::cin >> addStudentData;
 
     if (addStudentData == 'y' || addStudentData == 'Y')
     {
+        //Push the student data into studentDataList
         for (int i = 0; i < numberOfStudents; ++i)
         {
+            //Here we are calling StudentData's constructor by passing a true flag
+            //This flag will tell the constructor to get data for construction from
+            //console
             studentDataList.push_back(SDBMS::StudentData(true));
         }
 

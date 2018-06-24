@@ -30,6 +30,9 @@
     <ClInclude Include="StudentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SubjectMarks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SDBMS_BASE_CLASS.cpp">
