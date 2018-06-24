@@ -31,12 +31,12 @@ void SDBMS::ClassRoomData::SetNumberOfStudents(const int numberOfStudent)
     m_numberOfStudents = numberOfStudent;
 }
 
-std::vector<SDBMS::StudentData> SDBMS::ClassRoomData::GetStudentsData()
+std::deque<SDBMS::StudentData> SDBMS::ClassRoomData::GetStudentsData()
 {
     return m_studentData;
 }
 
-void SDBMS::ClassRoomData::SetStudentsData(const std::vector<SDBMS::StudentData> studData)
+void SDBMS::ClassRoomData::SetStudentsData(const std::deque<SDBMS::StudentData> studData)
 {
     m_studentData = studData;
 }

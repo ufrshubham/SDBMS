@@ -11,7 +11,7 @@ namespace SDBMS
     class StudentData :
         public SDBMS_BASE_CLASS
     {
-        static int m_rollNumber; //stores the roll number of current student
+        int m_rollNumber;        //stores the roll number of current student
         std::string m_name;      //stores the name of current student
         SubjectMarks m_marks;    //stores the marks of all subjects of current student
 

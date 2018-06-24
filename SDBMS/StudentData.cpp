@@ -2,8 +2,6 @@
 #include <iostream>
 #include "SubjectMarks.h"
 
-int SDBMS::StudentData::m_rollNumber = 0;
-
 SDBMS::StudentData::StudentData(bool init)
 {
     //increase roll number for every construction
