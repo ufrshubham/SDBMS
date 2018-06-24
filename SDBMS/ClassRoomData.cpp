@@ -2,41 +2,41 @@
 #include "StudentData.h"
 
 
-ClassRoomData::ClassRoomData()
+SDBMS::ClassRoomData::ClassRoomData()
 {
 }
 
 
-ClassRoomData::~ClassRoomData()
+SDBMS::ClassRoomData::~ClassRoomData()
 {
 }
 
-int ClassRoomData::GetClassRoomNumber()
+int SDBMS::ClassRoomData::GetClassRoomNumber()
 {
     return m_classRoomNumber;
 }
 
-void ClassRoomData::SetClassRoomNumber(const int classRoomNumber)
+void SDBMS::ClassRoomData::SetClassRoomNumber(const int classRoomNumber)
 {
     m_classRoomNumber = classRoomNumber;
 }
 
-int ClassRoomData::GetNumberOfStudents()
+int SDBMS::ClassRoomData::GetNumberOfStudents()
 {
     return m_numberOfStudents;
 }
 
-void ClassRoomData::SetNumberOfStudents(const int numberOfStudent)
+void SDBMS::ClassRoomData::SetNumberOfStudents(const int numberOfStudent)
 {
     m_numberOfStudents = numberOfStudent;
 }
 
-std::vector<StudentData> ClassRoomData::GetStudentsData()
+std::vector<SDBMS::StudentData> SDBMS::ClassRoomData::GetStudentsData()
 {
     return m_studentData;
 }
 
-void ClassRoomData::SetStudentsData(const std::vector<StudentData> studData)
+void SDBMS::ClassRoomData::SetStudentsData(const std::vector<SDBMS::StudentData> studData)
 {
     m_studentData = studData;
 }

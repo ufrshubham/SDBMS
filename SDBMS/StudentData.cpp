@@ -2,27 +2,27 @@
 
 
 
-StudentData::StudentData()
+SDBMS::StudentData::StudentData()
 {
     m_marks = { 0 };
 }
 
 
-StudentData::~StudentData()
+SDBMS::StudentData::~StudentData()
 {
 }
 
-std::string StudentData::GetName()
+std::string SDBMS::StudentData::GetName()
 {
     return m_name;
 }
 
-void StudentData::SetName(const std::string name)
+void SDBMS::StudentData::SetName(const std::string name)
 {
     m_name = name;
 }
 
-subjectMarks StudentData::GetSubjectMarks()
+SDBMS::subjectMarks SDBMS::StudentData::GetSubjectMarks()
 {
     subjectMarks subMarks{ 
                            m_marks.mEnglish,
@@ -34,7 +34,7 @@ subjectMarks StudentData::GetSubjectMarks()
     return subMarks;
 }
 
-void StudentData::SetSubjectMarks(const subjectMarks subMarks)
+void SDBMS::StudentData::SetSubjectMarks(const subjectMarks subMarks)
 {
     m_marks = subMarks;
 }

@@ -3,23 +3,26 @@
 #include "StudentData.h"
 #include <vector>
 
-class ClassRoomData :
-    public SDBMS_BASE_CLASS
+namespace SDBMS
 {
-    int m_classRoomNumber;
-    int m_numberOfStudents;
-    std::vector<StudentData> m_studentData;
-public:
-    ClassRoomData();
-    ~ClassRoomData();
+    class ClassRoomData :
+        public SDBMS_BASE_CLASS
+    {
+        int m_classRoomNumber;
+        int m_numberOfStudents;
+        std::vector<StudentData> m_studentData;
+    public:
+        ClassRoomData();
+        ~ClassRoomData();
 
-    int GetClassRoomNumber();
-    void SetClassRoomNumber(const int);
+        int GetClassRoomNumber();
+        void SetClassRoomNumber(const int);
 
-    int GetNumberOfStudents();
-    void SetNumberOfStudents(const int);
+        int GetNumberOfStudents();
+        void SetNumberOfStudents(const int);
 
-    std::vector<StudentData> GetStudentsData();
-    void SetStudentsData(const std::vector<StudentData>);
-};
+        std::vector<StudentData> GetStudentsData();
+        void SetStudentsData(const std::vector<StudentData>);
+    };
+}
 

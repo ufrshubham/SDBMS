@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-void Menu::CheckValidity()
+void SDBMS::Menu::CheckValidity()
 {
     if (!m_optionsList.empty() && (m_menuName.size() != 0))
     {
@@ -11,38 +11,38 @@ void Menu::CheckValidity()
     }
 }
 
-Menu::Menu()
+SDBMS::Menu::Menu()
 {
     m_isValidToCreate = false;
     m_choice = 0;
 }
 
 
-Menu::~Menu()
+SDBMS::Menu::~Menu()
 {
 }
 
-std::string Menu::GetOptionsList()
+std::string SDBMS::Menu::GetOptionsList()
 {
     return std::string();
 }
 
-void Menu::SetOptionsList(const std::vector<std::string> optionsList)
+void SDBMS::Menu::SetOptionsList(const std::vector<std::string> optionsList)
 {
     m_optionsList = optionsList;
 }
 
-std::string Menu::GetMenuName()
+std::string SDBMS::Menu::GetMenuName()
 {
     return m_menuName;
 }
 
-void Menu::SetMenuName(const std::string menuName)
+void SDBMS::Menu::SetMenuName(const std::string menuName)
 {
     m_menuName = menuName;
 }
 
-void Menu::DisplayMenu()
+void SDBMS::Menu::DisplayMenu()
 {
     CheckValidity();
 
@@ -63,7 +63,7 @@ void Menu::DisplayMenu()
     }
 }
 
-int Menu::GetChoice()
+int SDBMS::Menu::GetChoice()
 {
     return m_choice;
 }

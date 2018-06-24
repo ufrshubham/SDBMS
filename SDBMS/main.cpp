@@ -1,9 +1,36 @@
 #include "SDBMS_BASE_CLASS.h"
 #include "Menu.h"
+#include "ClassRoomData.h"
+
+int MainMenu();
+void AddNewClass();
 
 int main()
 {
-    Menu mainMenu;
+    int choice = MainMenu();
+
+    switch (choice)
+    {
+    case 1:
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        break;
+    case 5:
+        break;
+    case 6:
+        break;
+    }
+
+    return 0;
+}
+
+int MainMenu()
+{
+    SDBMS::Menu mainMenu;
 
     std::vector<std::string> optionsList;
 
@@ -17,5 +44,11 @@ int main()
     mainMenu.SetOptionsList(optionsList);
     mainMenu.SetMenuName("Main Menu");
     mainMenu.DisplayMenu();
-    return 0;
+
+    return mainMenu.GetChoice();
+}
+
+void AddNewClass()
+{
+    SDBMS::ClassRoomData classRoomData;
 }
