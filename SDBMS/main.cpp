@@ -2,35 +2,44 @@
 #include "Menu.h"
 #include "ClassRoomData.h"
 #include <iostream>
+#include "SDBMS_Utilities.h"
 
-int MainMenu();
+SDBMS::MainMenuOptions MainMenu();
 void AddNewClass();
 
 int main()
 {
-    int choice = MainMenu();
+    SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
 
-    switch (choice)
+    while (choice != SDBMS::Invalid_Choice)
     {
-    case 1:
-        AddNewClass();
-        break;
-    case 2:
-        break;
-    case 3:
-        break;
-    case 4:
-        break;
-    case 5:
-        break;
-    case 6:
-        break;
+        choice = MainMenu();
+
+        switch (choice)
+        {
+        case SDBMS::Add_Class_Data:
+            AddNewClass();
+            break;
+        case SDBMS::Edit_Class_Data:
+            break;
+        case SDBMS::Delete_Class_Data:
+            break;
+        case SDBMS::Save:
+            break;
+        case SDBMS::Save_Exit:
+            break;
+        case SDBMS::Exit_No_Save:
+            break;
+        default:
+            choice = SDBMS::Invalid_Choice;
+            break;
+        }
     }
 
     return 0;
 }
 
-int MainMenu()
+SDBMS::MainMenuOptions MainMenu()
 {
     SDBMS::Menu mainMenu;
 
@@ -47,7 +56,7 @@ int MainMenu()
     mainMenu.SetMenuName("Main Menu");
     mainMenu.DisplayMenu();
 
-    return mainMenu.GetChoice();
+    return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
 }
 
 void AddNewClass()

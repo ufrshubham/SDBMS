@@ -18,13 +18,16 @@
     <ClInclude Include="SDBMS_BASE_CLASS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StudentData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ClassRoomData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDBMS_Utilities.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StudentData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,13 +38,13 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StudentData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ClassRoomData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StudentData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
