@@ -15,11 +15,15 @@ SDBMS::EditStudentDataOptions EditStudentDataMenu();
 void AddNewClass();
 void EditExisitingClass();
 void DeleteExisitingClass();
+
+std::vector<int> ExtractIntsFromString(const std::string &userInputString);
+
 void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
 void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
+void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
+
 void InitGlobalDataManager();
 int GetNewMarks();
-std::deque<SDBMS::StudentData>::iterator StudentLocator(std::deque<SDBMS::StudentData> studentsData, int rollNumberToEdit);
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
 
 //This deque will be our doubly linked list which will store
@@ -205,6 +209,7 @@ void EditExisitingClass()
                 choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Delete_Student_Data:
+                DeleteExisitingStudentData(itrList);
                 choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Exit:
@@ -229,8 +234,8 @@ void DeleteExisitingClass()
     std::cout << "Deleting an existing class room data" << std::endl;
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
-    std::string deleteClassRoomNumber;
-    std::vector<int> deleteVector;
+    std::string userInput;
+    std::vector<int> deleteClassRoomList(0,0);
     char choice;
 
     //Get class room numbers from user to be deleted
@@ -238,24 +243,11 @@ void DeleteExisitingClass()
     //deleting of multiple class room records at once
     std::cout << "Enter class room number to delete: ";
     std::cin.ignore();
-    std::getline(std::cin, deleteClassRoomNumber);
+    std::getline(std::cin, userInput);
 
-    //This loop is written to seperate out class room numbers for
-    //user provided input seperated by blank space
-    for (int i = 0, j = 0; i < deleteClassRoomNumber.length() + 1; ++i)
-    {
-        if (std::isdigit(deleteClassRoomNumber[i]))
-        {
-            continue;
-        }
-        else if (deleteClassRoomNumber[i] != ' ' || deleteClassRoomNumber[i] != '\n')
-        {
-            deleteVector.push_back(std::stoi(deleteClassRoomNumber.substr(j,i-j)));
-            j = i;
-        }
-    }
+    deleteClassRoomList = ExtractIntsFromString(userInput);
 
-    auto itrList = ClassRoomLocator(deleteVector);
+    auto itrList = ClassRoomLocator(deleteClassRoomList);
 
     std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
     std::cin >> choice;
@@ -277,7 +269,7 @@ void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> clas
     std::cout << "Adding new student data" << std::endl;
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
-    //Since we allow addition/edit of a single student to a single class room at a time
+    //Since we allow editing of a single class room at a time
     //we can be sure that classRoomItr set will have only one iterator in it.
     //This iterator will be located at the begining. So we get pointer to current 
     //class room from set of iterator
@@ -308,7 +300,7 @@ void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterato
     int rollNumberToEdit = 0;
     SDBMS::EditStudentDataOptions choice = SDBMS::Edit_Name;
 
-    //Since we allow addition/edit of a single student to a single class room at a time
+    //Since we allow editing of a single class room at a time
     //we can be sure that classRoomItr set will have only one iterator in it.
     //This iterator will be located at the begining. So we get pointer to current 
     //class room from set of iterator
@@ -390,6 +382,50 @@ void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterato
     }
 }
 
+void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
+{
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+    std::cout << "Deleteing existing student data" << std::endl;
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+
+    std::string userInputString = "";
+    char choice = 'y';
+
+    std::cout << "Enter roll numbers of students to be deleted: ";
+    std::cin.ignore();
+    std::getline(std::cin, userInputString);
+
+    std::vector<int> deleteRollNumberList = ExtractIntsFromString(userInputString);
+    std::set<std::deque<SDBMS::StudentData>::iterator> deleteItrList;
+
+    //Since we allow editing of a single class room at a time
+    //we can be sure that classRoomItr set will have only one iterator in it.
+    //This iterator will be located at the begining. So we get pointer to current 
+    //class room from set of iterator
+    auto currentClassRoom = *classRoomItr.begin();
+
+    auto currentStudentsData = currentClassRoom->GetStudentsData();
+
+    for (auto itr = currentStudentsData->begin(); itr != currentStudentsData->end(); ++itr)
+    {
+        if (std::find(deleteRollNumberList.begin(), deleteRollNumberList.end(), itr->GetRollNumber()) != deleteRollNumberList.end())
+        {
+            deleteItrList.insert(itr);
+        }
+    }
+
+    std::cout << "Are you sure you want to delete these " << deleteItrList.size() << " student data(y/n) ?";
+    std::cin >> choice;
+
+    if(choice == 'y' || choice == 'Y')
+    {
+        for (auto &i : deleteItrList)
+        {
+            currentStudentsData->erase(i);
+        }
+    }
+}
+
 void InitGlobalDataManager()
 {
     //Will be implemented later. This function will read the binary file that we will store
@@ -402,12 +438,6 @@ int GetNewMarks()
     std::cout << "Enter new marks: ";
     std::cin >> newMarks;
     return newMarks;
-}
-
-std::deque<SDBMS::StudentData>::iterator StudentLocator(std::deque<SDBMS::StudentData> studentsData, int rollNumberToEdit)
-{
-
-    return std::deque<SDBMS::StudentData>::iterator();
 }
 
 //This function will traverse through the globalDataManager and find the desired class room number
@@ -429,4 +459,25 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vecto
     }
 
     return itrList;
+}
+
+std::vector<int> ExtractIntsFromString(const std::string &userInputString)
+{
+    std::vector<int> intsVector(0, 0);
+
+    //This loop is written to seperate out integers from user provided input seperated by blank space
+    for (int i = 0, j = 0; i < userInputString.length() + 1; ++i)
+    {
+        if (std::isdigit(userInputString[i]))
+        {
+            continue;
+        }
+        else if (userInputString[i] != ' ' || userInputString[i] != '\n')
+        {
+            intsVector.push_back(std::stoi(userInputString.substr(j, i - j)));
+            j = i;
+        }
+    }
+
+    return intsVector;
 }
