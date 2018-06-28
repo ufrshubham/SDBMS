@@ -1,6 +1,9 @@
 #include "StudentData.h"
 #include <iostream>
 #include "SubjectMarks.h"
+#include <iomanip>
+
+#define INT_LENGTH(X) std::string(std::to_string(X)).length()
 
 SDBMS::StudentData::StudentData(int classRoomNumber, int rollNumber) : m_classRoomNumber(classRoomNumber)
 {
@@ -77,4 +80,12 @@ void SDBMS::StudentData::FillStudentData()
     std::cin >> subMarks.mCompSci;
 
     SetSubjectMarks(subMarks);
+}
+
+void SDBMS::StudentData::ShowStudentData()
+{
+    std::cout << m_rollNumber << std::setw(11) << m_name << std::setw(20 - m_name.length())
+              << m_marks.mEnglish <<std::setw(5- INT_LENGTH(m_marks.mEnglish))<< m_marks.mPhysics<< std::setw(5 - INT_LENGTH(m_marks.mPhysics))
+              << m_marks.mChemistry << std::setw(6 - INT_LENGTH(m_marks.mChemistry)) << m_marks.mMaths << std::setw(7- INT_LENGTH(m_marks.mMaths))
+              << m_marks.mCompSci << std::endl;
 }

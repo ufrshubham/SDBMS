@@ -5,6 +5,7 @@ namespace SDBMS
     enum MainMenuOptions
     {
         Add_Class_Data = 1,
+        Show_Class_Data,
         Edit_Class_Data,
         Delete_Class_Data,
         Save,

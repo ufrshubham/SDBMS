@@ -13,6 +13,7 @@ SDBMS::EditMenuOptions EditMenu();
 SDBMS::EditStudentDataOptions EditStudentDataMenu();
 
 void AddNewClass();
+void ShowClassData();
 void EditExisitingClass();
 void DeleteExisitingClass();
 
@@ -47,6 +48,9 @@ int main()
         case SDBMS::Add_Class_Data:
             AddNewClass();
             break;
+        case SDBMS::Show_Class_Data:
+            ShowClassData();
+            break;
         case SDBMS::Edit_Class_Data:
             EditExisitingClass();
             break;
@@ -76,6 +80,7 @@ SDBMS::MainMenuOptions MainMenu()
     std::vector<std::string> optionsList;
 
     optionsList.push_back("Add new class room");
+    optionsList.push_back("Show class room data");
     optionsList.push_back("Edit existing class room");
     optionsList.push_back("Delete existing class room");
     optionsList.push_back("Save");
@@ -174,6 +179,35 @@ void AddNewClass()
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "New class room data added succesfully" << std::endl;
+}
+
+void ShowClassData()
+{
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+    std::cout << "Adding new class room data" << std::endl;
+    std::cout << "-------------------------------------------------------------------------" << std::endl;
+
+    int classRoomNumber = 0;
+
+    std::cout << "Enter class room number: ";
+    std::cin >> classRoomNumber;
+
+    auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
+
+    for (auto &itr : itrList)
+    {
+        std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
+        std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
+        std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
+        
+        auto sdItr = itr->GetStudentsData();
+
+        for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+        {
+            i->ShowStudentData();
+        }
+    }
+
 }
 
 void EditExisitingClass()

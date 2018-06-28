@@ -33,6 +33,8 @@ namespace SDBMS
         void SetSubjectMarks(const SubjectMarks); //used to set all subject marks of current student
 
         void FillStudentData(); //used to get data from console
+
+        void ShowStudentData();
     };
 }
 
