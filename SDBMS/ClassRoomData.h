@@ -35,4 +35,3 @@ namespace SDBMS
         std::deque<StudentData>::iterator FindStudent(int rollNumber); //used to find the iterator to student data of given roll number
     };
 }
-

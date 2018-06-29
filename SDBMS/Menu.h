@@ -36,4 +36,3 @@ namespace SDBMS
         int GetChoice(); //used to get the option entered by user
     };
 }
-

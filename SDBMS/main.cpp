@@ -7,6 +7,7 @@
 #include <cctype>
 #include <set>
 #include <algorithm>
+#include <fstream>
 
 SDBMS::MainMenuOptions MainMenu();
 SDBMS::EditMenuOptions EditMenu();
@@ -22,6 +23,7 @@ std::vector<int> ExtractIntsFromString(const std::string &userInputString);
 void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
 void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
 void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr);
+void SaveToFile();
 
 void InitGlobalDataManager();
 int GetNewMarks();
@@ -29,7 +31,7 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vecto
 
 //This deque will be our doubly linked list which will store
 //all the class room data. This will hold on to the data in current
-//session untill exit is called.
+//session until exit is called.
 std::deque<SDBMS::ClassRoomData> globalDataManager;
 
 int main()
@@ -58,6 +60,7 @@ int main()
             DeleteExisitingClass();
             break;
         case SDBMS::Save:
+            SaveToFile();
             break;
         case SDBMS::Save_Exit:
             break;
@@ -325,6 +328,7 @@ void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> clas
     currentClassRoom->SetMaxRollNumber(currentClassRoom->GetMaxRollNumber() + 1);
 }
 
+//Edits data of an existing student from a class
 void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
     std::cout << "-------------------------------------------------------------------------" << std::endl;
@@ -416,6 +420,7 @@ void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterato
     }
 }
 
+//Delete data of an existing student from a class
 void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
     std::cout << "-------------------------------------------------------------------------" << std::endl;
@@ -460,10 +465,60 @@ void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::itera
     }
 }
 
+//Saves the current state of globalDataManager to a binary file
+void SaveToFile()
+{
+    std::string fileName("savfile.sdbms");
+    std::ofstream dataFile;
+    dataFile.open(fileName, std::ios::binary);
+
+    if (dataFile.is_open())
+    {
+        char* classData = nullptr;
+
+        for (auto itr : globalDataManager)
+        {
+            classData = reinterpret_cast<char*>(new SDBMS::ClassRoomData(itr));
+
+            dataFile.write(classData, sizeof(SDBMS::ClassRoomData));
+
+            delete[] classData;
+        }
+    }
+    else
+    {
+        std::cout << "Could not save." << std::endl;
+    }
+    dataFile.close();
+}
+
 void InitGlobalDataManager()
 {
     //Will be implemented later. This function will read the binary file that we will store
     //and then will filling the data from it into globalDataManager
+
+    std::string fileName("savfile.sdbms");
+    std::ifstream dataFile;
+    dataFile.open(fileName, std::ios::binary);
+
+    if (dataFile.is_open())
+    {
+        char* classData = new char[sizeof(SDBMS::ClassRoomData)];
+
+        while(!dataFile.eof())
+        {
+            dataFile.read(classData, sizeof(SDBMS::ClassRoomData));
+
+            globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
+
+            delete[] classData;
+        }
+    }
+    else
+    {
+        std::cout << "Could not load data." << std::endl;
+    }
+    dataFile.close();
 }
 
 int GetNewMarks()
