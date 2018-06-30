@@ -38,21 +38,21 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 int main()
 {
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
-    try
-    {
-        InitGlobalDataManager();
-    }
-    catch (...)
-    {
-        SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+    //try
+    //{
+    //    InitGlobalDataManager();
+    //}
+    //catch (...)
+    //{
+    //    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
 
-        if (log != nullptr)
-        {
-            *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
-        }
+    //    if (log != nullptr)
+    //    {
+    //        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
+    //    }
 
-        choice = SDBMS::MainMenu_Invalid_Choice;
-    }
+    //    choice = SDBMS::MainMenu_Invalid_Choice;
+    //}
 
     //Keep going until user enters invalid choice
     while (choice != SDBMS::MainMenu_Invalid_Choice)
@@ -74,7 +74,7 @@ int main()
             DeleteExisitingClass();
             break;
         case SDBMS::Save:
-            SaveToFile();
+            //SaveToFile();
             break;
         case SDBMS::Save_Exit:
             break;
@@ -528,7 +528,7 @@ void InitGlobalDataManager()
         {
             dataFile.read(classData, sizeof(SDBMS::ClassRoomData));
 
-            globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
+            //globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
         }
 
         delete[] classData;

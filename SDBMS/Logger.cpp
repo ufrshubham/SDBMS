@@ -28,6 +28,14 @@ void SDBMS::Logger::operator<<(std::string dumpString)
     }
 }
 
+void SDBMS::Logger::operator<<(const int & objectId)
+{
+    if (logFile.is_open())
+    {
+        logFile << objectId;
+    }
+}
+
 SDBMS::Logger::~Logger()
 {
     if (logFile.is_open())

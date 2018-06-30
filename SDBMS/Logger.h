@@ -6,14 +6,14 @@
 
 namespace SDBMS
 {
-    class Logger :
-        public SDBMS_BASE_CLASS
+    class Logger
     {
         std::ofstream logFile;
         Logger();
     public:
         static Logger* CreateLogger();
         void operator << (std::string dumpString);
+        void operator << (const int&);
         ~Logger();
     };
 }
