@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ClassRoomData.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="SDBMS_BASE_CLASS.h" />
     <ClInclude Include="SDBMS_Utilities.h" />
@@ -124,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClassRoomData.cpp" />
+    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="SDBMS_BASE_CLASS.cpp" />

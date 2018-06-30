@@ -8,6 +8,7 @@
 #include <set>
 #include <algorithm>
 #include <fstream>
+#include "Logger.h"
 
 SDBMS::MainMenuOptions MainMenu();
 SDBMS::EditMenuOptions EditMenu();
@@ -36,9 +37,22 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 
 int main()
 {
-    InitGlobalDataManager();
-
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
+    try
+    {
+        InitGlobalDataManager();
+    }
+    catch (...)
+    {
+        SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+
+        if (log != nullptr)
+        {
+            *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
+        }
+
+        choice = SDBMS::MainMenu_Invalid_Choice;
+    }
 
     //Keep going until user enters invalid choice
     while (choice != SDBMS::MainMenu_Invalid_Choice)
@@ -481,9 +495,8 @@ void SaveToFile()
             classData = reinterpret_cast<char*>(new SDBMS::ClassRoomData(itr));
 
             dataFile.write(classData, sizeof(SDBMS::ClassRoomData));
-
-            delete[] classData;
         }
+        delete[] classData;
     }
     else
     {
@@ -494,7 +507,13 @@ void SaveToFile()
 
 void InitGlobalDataManager()
 {
-    //Will be implemented later. This function will read the binary file that we will store
+    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+
+    if (log != nullptr)
+    {
+        *log << "Log file opened succesfully.";
+    }
+    //This function will read the saved file that we saved on disk,
     //and then will filling the data from it into globalDataManager
 
     std::string fileName("savfile.sdbms");
@@ -510,9 +529,9 @@ void InitGlobalDataManager()
             dataFile.read(classData, sizeof(SDBMS::ClassRoomData));
 
             globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
-
-            delete[] classData;
         }
+
+        delete[] classData;
     }
     else
     {
