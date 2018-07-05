@@ -231,7 +231,7 @@ void AddNewClass()
 void ShowClassData()
 {
     std::cout << "-------------------------------------------------------------------------" << std::endl;
-    std::cout << "Adding new class room data" << std::endl;
+    std::cout << "Showing class room data" << std::endl;
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
     int classRoomNumber = 0;
@@ -239,22 +239,29 @@ void ShowClassData()
     std::cout << "Enter class room number: ";
     std::cin >> classRoomNumber;
 
-    auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
-
-    for (auto &itr : itrList)
+    if (classRoomNumber > 0)
     {
-        std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
-        std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
-        std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
-        
-        auto sdItr = itr->GetStudentsData();
+        auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
 
-        for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+        for (auto &itr : itrList)
         {
-            i->ShowStudentData();
+            std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
+            std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
+            std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
+
+            auto sdItr = itr->GetStudentsData();
+
+            for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+            {
+                i->ShowStudentData();
+            }
         }
     }
-
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "Invalid class room number entered!" << std::endl;
+    }
 }
 
 void EditExisitingClass()
