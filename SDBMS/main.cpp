@@ -253,6 +253,7 @@ void ShowClassData()
     {
         auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
 
+        //Added check to see if the entered class room number is valid or not
         if (!itrList.empty())
         {
             for (auto &itr : itrList)
