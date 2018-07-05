@@ -131,7 +131,7 @@ SDBMS::EditMenuOptions EditMenu(bool isMinimal)
         optionsList.push_back("Delete exisiting student data");
     }
 
-    optionsList.push_back("Edit");
+    optionsList.push_back("Exit");
 
     editMenu.SetOptionsList(optionsList);
     editMenu.SetMenuName("Edit Menu");
