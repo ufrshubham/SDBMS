@@ -243,18 +243,26 @@ void ShowClassData()
     {
         auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
 
-        for (auto &itr : itrList)
+        if (!itrList.empty())
         {
-            std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
-            std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
-            std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
-
-            auto sdItr = itr->GetStudentsData();
-
-            for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+            for (auto &itr : itrList)
             {
-                i->ShowStudentData();
+                std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
+                std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
+                std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
+
+                auto sdItr = itr->GetStudentsData();
+
+                for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+                {
+                    i->ShowStudentData();
+                }
             }
+        }
+        else
+        {
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "Such class room does not exist!" << std::endl;
         }
     }
     else
