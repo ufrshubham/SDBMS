@@ -61,7 +61,8 @@ void SDBMS::StudentData::FillStudentData()
     SDBMS::SubjectMarks subMarks = { 0 };
 
     std::cout << "\tStudent " << m_rollNumber << " name: ";
-    std::cin >> m_name;
+    std::cin.ignore();
+    std::getline(std::cin, m_name);
 
     std::cout << "\tEnter marks:" << std::endl;
     std::cout << "\t\tEnglish: ";
