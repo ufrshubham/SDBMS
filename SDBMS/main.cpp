@@ -164,38 +164,59 @@ void AddNewClass()
 
     std::cout << "Enter class room number: ";
     std::cin >> classRoomNumber;
+    
+    //We need to perform a validation check to ensure that user does not try to create 
+    //an existing class
+    bool matchFound = false;
+
+    for (auto &itr : globalDataManager)
+    {
+        if (itr.GetClassRoomNumber() == classRoomNumber)
+        {
+            matchFound = true;
+        }
+    }
 
     std::cout << "Enter number of students: ";
     std::cin >> numberOfStudents;
 
-    //This will create classRoomData and will set the class room number 
-    //and number of students to values provided by user.
-    SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
 
-    //Ask user if he wants to enter data of user right now. This is done 
-    //because users can choose to first add dummy class room and later use 
-    //Edit class room data option to add student data to it.
-    std::cout << "Do you want to add student data now(y/n)?";
-    std::cin >> addStudentData;
-
-    if (addStudentData == 'y' || addStudentData == 'Y')
+    if (!matchFound)
     {
-        //Since we have already initialized classRoomData with classRoomNumber and numberOfStudents,
-        //as well as m_studentData inside classRoomData is also initialized with class room number and
-        //roll numbers, here we just have to get name and subject marks of each student.
-        //So here, classRoomData.GetStudentsData() will return the m_studentData deque stored in classRoomData
-        //and we will loop over it and call FillStudentData() for each of it's element
-        for (auto itr = classRoomData.GetStudentsData()->begin(); itr != classRoomData.GetStudentsData()->end(); ++itr)
+        //This will create classRoomData and will set the class room number 
+        //and number of students to values provided by user.
+        SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
+
+        //Ask user if he wants to enter data of user right now. This is done 
+        //because users can choose to first add dummy class room and later use 
+        //Edit class room data option to add student data to it.
+        std::cout << "Do you want to add student data now(y/n)?";
+        std::cin >> addStudentData;
+
+        if (addStudentData == 'y' || addStudentData == 'Y')
         {
-            itr->FillStudentData();
+            //Since we have already initialized classRoomData with classRoomNumber and numberOfStudents,
+            //as well as m_studentData inside classRoomData is also initialized with class room number and
+            //roll numbers, here we just have to get name and subject marks of each student.
+            //So here, classRoomData.GetStudentsData() will return the m_studentData deque stored in classRoomData
+            //and we will loop over it and call FillStudentData() for each of it's element
+            for (auto itr = classRoomData.GetStudentsData()->begin(); itr != classRoomData.GetStudentsData()->end(); ++itr)
+            {
+                itr->FillStudentData();
+            }
         }
+
+        //Push this classRoomData into our globalDataManager
+        globalDataManager.push_back(classRoomData);
+
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "New class room data added succesfully" << std::endl;
     }
-
-    //Push this classRoomData into out globalDataManager
-    globalDataManager.push_back(classRoomData);
-
-    std::cout << "-------------------------------------------------------------------------" << std::endl;
-    std::cout << "New class room data added succesfully" << std::endl;
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "This class already exisits." << std::endl;
+    }
 }
 
 void ShowClassData()
