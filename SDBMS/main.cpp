@@ -30,6 +30,8 @@ void InitGlobalDataManager();
 int GetNewMarks();
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
 
+bool IsStringValid(std::string userInput);
+
 //This deque will be our doubly linked list which will store
 //all the class room data. This will hold on to the data in current
 //session until exit is called.
@@ -128,7 +130,7 @@ SDBMS::EditMenuOptions EditMenu(bool isMinimal)
     if (!isMinimal)
     {
         optionsList.push_back("Edit existing student data");
-        optionsList.push_back("Delete exisiting student data");
+        optionsList.push_back("Delete existing student data");
     }
 
     optionsList.push_back("Exit");
@@ -362,19 +364,37 @@ void DeleteExisitingClass()
     std::getline(std::cin, userInput);
 
     deleteClassRoomList = ExtractIntsFromString(userInput);
-
-    auto itrList = ClassRoomLocator(deleteClassRoomList);
-
-    std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
-    std::cin >> choice;
-
-    if (choice == 'Y' || choice == 'y')
+    
+    //If string could not be parsed, it means that some invalid character was entred by user.
+    if (!deleteClassRoomList.empty())
     {
-        //Loop over the iterators to be deleted and pass them to globalDataManager's erase function
-        for (auto &i : itrList)
+        auto itrList = ClassRoomLocator(deleteClassRoomList);
+
+        //If itrList is empty, that means that we could not find the class rooms in globalDataManager
+        if (!itrList.empty())
         {
-            globalDataManager.erase(i);
+            std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
+            std::cin >> choice;
+
+            if (choice == 'Y' || choice == 'y')
+            {
+                //Loop over the iterators to be deleted and pass them to globalDataManager's erase function
+                for (auto &i : itrList)
+                {
+                    globalDataManager.erase(i);
+                }
+            }
         }
+        else
+        {
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "Such class room does not exist!" << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "Invalid input!" << std::endl;
     }
 }
 
@@ -634,23 +654,40 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vecto
     return itrList;
 }
 
+bool IsStringValid(std::string userInput)
+{
+    bool isValid = true;
+
+    for (auto &ch : userInput)
+    {
+        if (!std::isdigit(ch) && ch != ' ' && ch != '\n')
+        {
+            isValid = false;
+            break;
+        }
+    }
+    return isValid;
+}
+
 std::vector<int> ExtractIntsFromString(const std::string &userInputString)
 {
     std::vector<int> intsVector(0, 0);
 
-    //This loop is written to seperate out integers from user provided input seperated by blank space
-    for (int i = 0, j = 0; i < userInputString.length() + 1; ++i)
+    if (IsStringValid(userInputString))
     {
-        if (std::isdigit(userInputString[i]))
+        //This loop is written to seperate out integers from user provided input seperated by blank space
+        for (int i = 0, j = 0; i < userInputString.length() + 1; ++i)
         {
-            continue;
-        }
-        else if (userInputString[i] != ' ' || userInputString[i] != '\n')
-        {
-            intsVector.push_back(std::stoi(userInputString.substr(j, i - j)));
-            j = i;
+            if (std::isdigit(userInputString[i]))
+            {
+                continue;
+            }
+            else if (userInputString[i] != ' ' || userInputString[i] != '\n')
+            {
+                intsVector.push_back(std::stoi(userInputString.substr(j, i - j)));
+                j = i;
+            }
         }
     }
-
     return intsVector;
 }
