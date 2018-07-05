@@ -11,7 +11,7 @@
 #include "Logger.h"
 
 SDBMS::MainMenuOptions MainMenu();
-SDBMS::EditMenuOptions EditMenu();
+SDBMS::EditMenuOptions EditMenu(bool isMinimal);
 SDBMS::EditStudentDataOptions EditStudentDataMenu();
 
 void AddNewClass();
@@ -97,12 +97,17 @@ SDBMS::MainMenuOptions MainMenu()
     std::vector<std::string> optionsList;
 
     optionsList.push_back("Add new class room");
-    optionsList.push_back("Show class room data");
-    optionsList.push_back("Edit existing class room");
-    optionsList.push_back("Delete existing class room");
-    optionsList.push_back("Save");
-    optionsList.push_back("Save and Exit");
-    optionsList.push_back("Exit without saving");
+
+    //If class room data does not exist, no point in showing extra options.
+    if (!globalDataManager.empty())
+    {
+        optionsList.push_back("Show class room data");
+        optionsList.push_back("Edit existing class room");
+        optionsList.push_back("Delete existing class room");
+        optionsList.push_back("Save");
+        optionsList.push_back("Save and Exit");
+    }
+    optionsList.push_back("Exit");
 
     mainMenu.SetOptionsList(optionsList);
     mainMenu.SetMenuName("Main Menu");
@@ -111,15 +116,21 @@ SDBMS::MainMenuOptions MainMenu()
     return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
 }
 
-SDBMS::EditMenuOptions EditMenu()
+SDBMS::EditMenuOptions EditMenu(bool isMinimal)
 {
     SDBMS::Menu editMenu;
 
     std::vector<std::string> optionsList;
 
     optionsList.push_back("Add new student data");
-    optionsList.push_back("Edit existing student data");
-    optionsList.push_back("Delete exisiting student data");
+
+    //No need to show these option if student data does not exist
+    if (!isMinimal)
+    {
+        optionsList.push_back("Edit existing student data");
+        optionsList.push_back("Delete exisiting student data");
+    }
+
     optionsList.push_back("Edit");
 
     editMenu.SetOptionsList(optionsList);
@@ -180,12 +191,11 @@ void AddNewClass()
             }
         }
 
-        std::cout << "Enter number of students: ";
-        std::cin >> numberOfStudents;
-
-
         if (!matchFound)
         {
+            std::cout << "Enter number of students: ";
+            std::cin >> numberOfStudents;
+
             //This will create classRoomData and will set the class room number 
             //and number of students to values provided by user.
             SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
@@ -289,8 +299,17 @@ void EditExisitingClass()
     if (!itrList.empty())
     {
         SDBMS::EditMenuOptions choice = SDBMS::Exit;
+        bool isMinimal = true;
 
-        choice = EditMenu();
+        auto currentClassRoom = *itrList.begin();
+        int numberOfStudents = currentClassRoom->GetNumberOfStudents();
+
+        if (numberOfStudents > 0)
+        {
+            isMinimal = false;
+        }
+
+        choice = EditMenu(isMinimal);
 
         while (choice != SDBMS::Edit_Invalid_Choice)
         {
