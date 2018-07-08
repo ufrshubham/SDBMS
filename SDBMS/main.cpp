@@ -11,7 +11,7 @@
 #include "Logger.h"
 
 SDBMS::MainMenuOptions MainMenu();
-SDBMS::EditMenuOptions EditMenu();
+SDBMS::EditMenuOptions EditMenu(bool isMinimal);
 SDBMS::EditStudentDataOptions EditStudentDataMenu();
 
 void AddNewClass();
@@ -29,6 +29,8 @@ void SaveToFile();
 void InitGlobalDataManager();
 int GetNewMarks();
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector);
+
+bool IsStringValid(std::string userInput);
 
 //This deque will be our doubly linked list which will store
 //all the class room data. This will hold on to the data in current
@@ -97,12 +99,17 @@ SDBMS::MainMenuOptions MainMenu()
     std::vector<std::string> optionsList;
 
     optionsList.push_back("Add new class room");
-    optionsList.push_back("Show class room data");
-    optionsList.push_back("Edit existing class room");
-    optionsList.push_back("Delete existing class room");
-    optionsList.push_back("Save");
-    optionsList.push_back("Save and Exit");
-    optionsList.push_back("Exit without saving");
+
+    //If class room data does not exist, no point in showing extra options.
+    if (!globalDataManager.empty())
+    {
+        optionsList.push_back("Show class room data");
+        optionsList.push_back("Edit existing class room");
+        optionsList.push_back("Delete existing class room");
+        optionsList.push_back("Save");
+        optionsList.push_back("Save and Exit");
+    }
+    optionsList.push_back("Exit");
 
     mainMenu.SetOptionsList(optionsList);
     mainMenu.SetMenuName("Main Menu");
@@ -111,16 +118,22 @@ SDBMS::MainMenuOptions MainMenu()
     return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
 }
 
-SDBMS::EditMenuOptions EditMenu()
+SDBMS::EditMenuOptions EditMenu(bool isMinimal)
 {
     SDBMS::Menu editMenu;
 
     std::vector<std::string> optionsList;
 
     optionsList.push_back("Add new student data");
-    optionsList.push_back("Edit existing student data");
-    optionsList.push_back("Delete exisiting student data");
-    optionsList.push_back("Edit");
+
+    //No need to show these option if student data does not exist
+    if (!isMinimal)
+    {
+        optionsList.push_back("Edit existing student data");
+        optionsList.push_back("Delete existing student data");
+    }
+
+    optionsList.push_back("Exit");
 
     editMenu.SetOptionsList(optionsList);
     editMenu.SetMenuName("Edit Menu");
@@ -164,44 +177,73 @@ void AddNewClass()
 
     std::cout << "Enter class room number: ";
     std::cin >> classRoomNumber;
-
-    std::cout << "Enter number of students: ";
-    std::cin >> numberOfStudents;
-
-    //This will create classRoomData and will set the class room number 
-    //and number of students to values provided by user.
-    SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
-
-    //Ask user if he wants to enter data of user right now. This is done 
-    //because users can choose to first add dummy class room and later use 
-    //Edit class room data option to add student data to it.
-    std::cout << "Do you want to add student data now(y/n)?";
-    std::cin >> addStudentData;
-
-    if (addStudentData == 'y' || addStudentData == 'Y')
+    
+    //Don't allow negative values
+    if (classRoomNumber > 0)
     {
-        //Since we have already initialized classRoomData with classRoomNumber and numberOfStudents,
-        //as well as m_studentData inside classRoomData is also initialized with class room number and
-        //roll numbers, here we just have to get name and subject marks of each student.
-        //So here, classRoomData.GetStudentsData() will return the m_studentData deque stored in classRoomData
-        //and we will loop over it and call FillStudentData() for each of it's element
-        for (auto itr = classRoomData.GetStudentsData()->begin(); itr != classRoomData.GetStudentsData()->end(); ++itr)
+        //We need to perform a validation check to ensure that user does not try to create 
+        //an existing class
+        bool matchFound = false;
+
+        for (auto &itr : globalDataManager)
         {
-            itr->FillStudentData();
+            if (itr.GetClassRoomNumber() == classRoomNumber)
+            {
+                matchFound = true;
+            }
+        }
+
+        if (!matchFound)
+        {
+            std::cout << "Enter number of students: ";
+            std::cin >> numberOfStudents;
+
+            //This will create classRoomData and will set the class room number 
+            //and number of students to values provided by user.
+            SDBMS::ClassRoomData classRoomData(classRoomNumber, numberOfStudents);
+
+            //Ask user if he wants to enter data of user right now. This is done 
+            //because users can choose to first add dummy class room and later use 
+            //Edit class room data option to add student data to it.
+            std::cout << "Do you want to add student data now(y/n)?";
+            std::cin >> addStudentData;
+
+            if (addStudentData == 'y' || addStudentData == 'Y')
+            {
+                //Since we have already initialized classRoomData with classRoomNumber and numberOfStudents,
+                //as well as m_studentData inside classRoomData is also initialized with class room number and
+                //roll numbers, here we just have to get name and subject marks of each student.
+                //So here, classRoomData.GetStudentsData() will return the m_studentData deque stored in classRoomData
+                //and we will loop over it and call FillStudentData() for each of it's element
+                for (auto itr = classRoomData.GetStudentsData()->begin(); itr != classRoomData.GetStudentsData()->end(); ++itr)
+                {
+                    itr->FillStudentData();
+                }
+            }
+
+            //Push this classRoomData into our globalDataManager
+            globalDataManager.push_back(classRoomData);
+
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "New class room data added succesfully" << std::endl;
+        }
+        else
+        {
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "This class already exisits." << std::endl;
         }
     }
-
-    //Push this classRoomData into out globalDataManager
-    globalDataManager.push_back(classRoomData);
-
-    std::cout << "-------------------------------------------------------------------------" << std::endl;
-    std::cout << "New class room data added succesfully" << std::endl;
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "Invalid class room number entered!" << std::endl;
+    }
 }
 
 void ShowClassData()
 {
     std::cout << "-------------------------------------------------------------------------" << std::endl;
-    std::cout << "Adding new class room data" << std::endl;
+    std::cout << "Showing class room data" << std::endl;
     std::cout << "-------------------------------------------------------------------------" << std::endl;
 
     int classRoomNumber = 0;
@@ -209,22 +251,38 @@ void ShowClassData()
     std::cout << "Enter class room number: ";
     std::cin >> classRoomNumber;
 
-    auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
-
-    for (auto &itr : itrList)
+    if (classRoomNumber > 0)
     {
-        std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
-        std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
-        std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
-        
-        auto sdItr = itr->GetStudentsData();
+        auto itrList = ClassRoomLocator(std::vector<int>(1, classRoomNumber));
 
-        for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+        //Added check to see if the entered class room number is valid or not
+        if (!itrList.empty())
         {
-            i->ShowStudentData();
+            for (auto &itr : itrList)
+            {
+                std::cout << "Class Room Number: " << itr->GetClassRoomNumber();
+                std::cout << " Number of student: " << itr->GetNumberOfStudents() << std::endl;
+                std::cout << "Roll No.   Name               Eng Phy Chem Maths Comp" << std::endl;
+
+                auto sdItr = itr->GetStudentsData();
+
+                for (auto i = sdItr->begin(); i != sdItr->end(); ++i)
+                {
+                    i->ShowStudentData();
+                }
+            }
+        }
+        else
+        {
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "Such class room does not exist!" << std::endl;
         }
     }
-
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "Invalid class room number entered!" << std::endl;
+    }
 }
 
 void EditExisitingClass()
@@ -244,8 +302,17 @@ void EditExisitingClass()
     if (!itrList.empty())
     {
         SDBMS::EditMenuOptions choice = SDBMS::Exit;
+        bool isMinimal = true;
 
-        choice = EditMenu();
+        auto currentClassRoom = *itrList.begin();
+        int numberOfStudents = currentClassRoom->GetNumberOfStudents();
+
+        if (numberOfStudents > 0)
+        {
+            isMinimal = false;
+        }
+
+        choice = EditMenu(isMinimal);
 
         while (choice != SDBMS::Edit_Invalid_Choice)
         {
@@ -297,19 +364,37 @@ void DeleteExisitingClass()
     std::getline(std::cin, userInput);
 
     deleteClassRoomList = ExtractIntsFromString(userInput);
-
-    auto itrList = ClassRoomLocator(deleteClassRoomList);
-
-    std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
-    std::cin >> choice;
-
-    if (choice == 'Y' || choice == 'y')
+    
+    //If string could not be parsed, it means that some invalid character was entred by user.
+    if (!deleteClassRoomList.empty())
     {
-        //Loop over the iterators to be deleted and pass them to globalDataManager's erase function
-        for (auto &i : itrList)
+        auto itrList = ClassRoomLocator(deleteClassRoomList);
+
+        //If itrList is empty, that means that we could not find the class rooms in globalDataManager
+        if (!itrList.empty())
         {
-            globalDataManager.erase(i);
+            std::cout << "Are you sure you want to delete these " << itrList.size() << " class room data(y/n)?" << std::endl;
+            std::cin >> choice;
+
+            if (choice == 'Y' || choice == 'y')
+            {
+                //Loop over the iterators to be deleted and pass them to globalDataManager's erase function
+                for (auto &i : itrList)
+                {
+                    globalDataManager.erase(i);
+                }
+            }
         }
+        else
+        {
+            std::cout << "-------------------------------------------------------------------------" << std::endl;
+            std::cout << "Such class room does not exist!" << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "-------------------------------------------------------------------------" << std::endl;
+        std::cout << "Invalid input!" << std::endl;
     }
 }
 
@@ -569,23 +654,40 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vecto
     return itrList;
 }
 
+bool IsStringValid(std::string userInput)
+{
+    bool isValid = true;
+
+    for (auto &ch : userInput)
+    {
+        if (!std::isdigit(ch) && ch != ' ' && ch != '\n')
+        {
+            isValid = false;
+            break;
+        }
+    }
+    return isValid;
+}
+
 std::vector<int> ExtractIntsFromString(const std::string &userInputString)
 {
     std::vector<int> intsVector(0, 0);
 
-    //This loop is written to seperate out integers from user provided input seperated by blank space
-    for (int i = 0, j = 0; i < userInputString.length() + 1; ++i)
+    if (IsStringValid(userInputString))
     {
-        if (std::isdigit(userInputString[i]))
+        //This loop is written to seperate out integers from user provided input seperated by blank space
+        for (int i = 0, j = 0; i < userInputString.length() + 1; ++i)
         {
-            continue;
-        }
-        else if (userInputString[i] != ' ' || userInputString[i] != '\n')
-        {
-            intsVector.push_back(std::stoi(userInputString.substr(j, i - j)));
-            j = i;
+            if (std::isdigit(userInputString[i]))
+            {
+                continue;
+            }
+            else if (userInputString[i] != ' ' || userInputString[i] != '\n')
+            {
+                intsVector.push_back(std::stoi(userInputString.substr(j, i - j)));
+                j = i;
+            }
         }
     }
-
     return intsVector;
 }
