@@ -81,6 +81,7 @@ int main()
         case SDBMS::Save_Exit:
             break;
         case SDBMS::Exit_No_Save:
+            choice = SDBMS::MainMenu_Invalid_Choice;
             break;
         default:
             choice = SDBMS::MainMenu_Invalid_Choice;
@@ -312,23 +313,20 @@ void EditExisitingClass()
             isMinimal = false;
         }
 
-        choice = EditMenu(isMinimal);
-
         while (choice != SDBMS::Edit_Invalid_Choice)
         {
+            choice = EditMenu(isMinimal);
+
             switch (choice)
             {
             case SDBMS::Add_Student_Data:
                 AddNewStudentData(itrList);
-                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Edit_Student_Data:
                 EditExisitingStudentData(itrList);
-                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Delete_Student_Data:
                 DeleteExisitingStudentData(itrList);
-                choice = SDBMS::Edit_Invalid_Choice;
                 break;
             case SDBMS::Exit:
                 choice = SDBMS::Edit_Invalid_Choice;
