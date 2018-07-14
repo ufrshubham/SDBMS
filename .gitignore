@@ -263,3 +263,4 @@ __pycache__/
 # SDBMS log and save files
 *.sdbms
 *.sdbmslog
+*.o
