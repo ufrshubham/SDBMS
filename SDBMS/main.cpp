@@ -539,26 +539,36 @@ void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::itera
     //This iterator will be located at the begining. So we get pointer to current 
     //class room from set of iterator
     auto currentClassRoom = *classRoomItr.begin();
-
     auto currentStudentsData = currentClassRoom->GetStudentsData();
+    std::deque<SDBMS::StudentData> newStudentData;
+    int deleteCount = 0;
 
+    //In this loop we will copy all the elements from currentStudentsData to newStudentData
+    //except the ones which user wants to delete.
     for (auto itr = currentStudentsData->begin(); itr != currentStudentsData->end(); ++itr)
     {
-        if (std::find(deleteRollNumberList.begin(), deleteRollNumberList.end(), itr->GetRollNumber()) != deleteRollNumberList.end())
+        //If not found, copy in newStudentData
+        if (std::find(deleteRollNumberList.begin(), deleteRollNumberList.end(), itr->GetRollNumber()) == deleteRollNumberList.end())
         {
-            deleteItrList.insert(itr);
+            newStudentData.push_back(*itr);
+        }
+        //Else increment the delete count
+        else
+        {
+            ++deleteCount;
         }
     }
 
-    std::cout << "Are you sure you want to delete these " << deleteItrList.size() << " student data(y/n) ?";
+    std::cout << "Are you sure you want to delete these " << deleteCount << " student data(y/n) ?";
     std::cin >> choice;
 
     if(choice == 'y' || choice == 'Y')
     {
-        for (auto &i : deleteItrList)
-        {
-            currentStudentsData->erase(i);
-        }
+        //Set the newStudentData in currentClassRoom
+        currentClassRoom->SetStudentsData(newStudentData);
+
+        //Also update the number of students in class after deletion
+        currentClassRoom->SetNumberOfStudents(currentClassRoom->GetNumberOfStudents() - deleteCount);
     }
 }
 
