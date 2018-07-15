@@ -97,8 +97,7 @@ SDBMS::MainMenuOptions MainMenu()
 {
 	SDBMS::Menu mainMenu;
 
-	std::vector<std::string> optionsList;
-
+  std::vector<std::string> optionsList;
 	optionsList.push_back("Add new class room");
 
 	//If class room data does not exist, no point in showing extra options.
@@ -425,24 +424,24 @@ void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> clas
 	// It should traverse the list from starting to the MaxRollNumber
 	// and if gets any unused no in between this , then that no should be assigned to new student
 
-	bool flag = false;
+	bool foundUnusedRollNumber = false;
 	for (int i = 1; i <= currentRollNumber; i++)
 	{
-		auto itr_stud = currentClassRoom->FindStudent(i);
-		if (itr_stud == currentClassRoom->GetStudentsData()->end())
+		auto itrStud = currentClassRoom->FindStudent(i);
+		if (itrStud == currentClassRoom->GetStudentsData()->end())
 		{
 			currentRollNumber = i;
-			flag = true;
+			foundUnusedRollNumber = true;
 			break;
 		}
 	}
 
-	if (flag == false)
+	if (foundUnusedRollNumber == false)
 	{
 		++currentRollNumber;
 	}
 
-	//We will construct a newStudent using currentClassRoomNumber and 1+currentRollNumber
+	//We will construct a newStudent using currentClassRoomNumber and currentRollNumber
 	SDBMS::StudentData newStudent(currentClassRoomNumber, currentRollNumber);
 
 	//Calling FillStudentData() on newStudent so that we can get the name and marks
@@ -588,7 +587,6 @@ void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::itera
 			++deleteCount;
 		}
 	}
-
 
 	std::cout << "Are you sure you want to delete these " << deleteCount << " student data(y/n) ?";
 	std::cin >> choice;
