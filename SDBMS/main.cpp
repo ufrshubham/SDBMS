@@ -116,7 +116,14 @@ SDBMS::MainMenuOptions MainMenu()
     mainMenu.SetMenuName("Main Menu");
     mainMenu.DisplayMenu();
 
-    return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
+	if ((optionsList[1].compare("Exit") == 0) && (mainMenu.GetChoice()== 2))
+	{
+		return SDBMS::MainMenuOptions::Exit_No_Save;
+	}
+	else
+	{
+		return static_cast<SDBMS::MainMenuOptions>(mainMenu.GetChoice());
+	}
 }
 
 SDBMS::EditMenuOptions EditMenu(bool isMinimal)
