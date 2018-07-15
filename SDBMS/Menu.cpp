@@ -65,10 +65,17 @@ void SDBMS::Menu::DisplayMenu()
         std::cout << "-------------------------------------------------------------------------" << std::endl;
         std::cout << "Enter your choice: ";
         std::cin >> m_choice;
+
     }
 }
 
 int SDBMS::Menu::GetChoice()
 {
     return m_choice;
+}
+
+
+void SDBMS::Menu::SetChoice(int choice)
+{
+	m_choice = choice;
 }

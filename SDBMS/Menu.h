@@ -20,6 +20,8 @@ namespace SDBMS
         //is set or not and set m_isValidToCreate 
         //accordingly
         void CheckValidity();
+		
+
 
     public:
         Menu();
@@ -34,5 +36,7 @@ namespace SDBMS
         void DisplayMenu(); //used to display current menu on screen
         
         int GetChoice(); //used to get the option entered by user
+
+		void SetChoice(int);
     };
 }
