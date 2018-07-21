@@ -3,8 +3,12 @@
 
 int SDBMS::SDBMS_BASE_CLASS::objectId = 0;
 
+GET_LOGGER
+
 SDBMS::SDBMS_BASE_CLASS::SDBMS_BASE_CLASS()
 {
+    DUMP_FUNCTION_INFO
+
     ++objectId;
     //SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
 
@@ -20,10 +24,12 @@ SDBMS::SDBMS_BASE_CLASS::SDBMS_BASE_CLASS()
 
 SDBMS::SDBMS_BASE_CLASS::~SDBMS_BASE_CLASS()
 {
+    DUMP_FUNCTION_INFO
     --objectId;
 }
 
 int SDBMS::SDBMS_BASE_CLASS::GetMaxObjectId()
 {
+    DUMP_FUNCTION_INFO
     return objectId;
 }

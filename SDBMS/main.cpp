@@ -38,11 +38,11 @@ bool IsStringValid(std::string userInput);
 std::deque<SDBMS::ClassRoomData> globalDataManager;
 
 //Since we need logger in multiple functions here, creating a global object
-SDBMS::Logger *logger = SDBMS::Logger::CreateLogger();
+GET_LOGGER
 
 int main()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
 
@@ -85,7 +85,7 @@ int main()
 //creates object of Menu class, displays it and return user input
 SDBMS::MainMenuOptions MainMenu()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     SDBMS::Menu mainMenu;
 
@@ -120,7 +120,7 @@ SDBMS::MainMenuOptions MainMenu()
 
 SDBMS::EditMenuOptions EditMenu(bool isMinimal)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     SDBMS::Menu editMenu;
 
@@ -146,7 +146,7 @@ SDBMS::EditMenuOptions EditMenu(bool isMinimal)
 
 SDBMS::EditStudentDataOptions EditStudentDataMenu()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     SDBMS::Menu editStudentDataMenu;
 
@@ -170,7 +170,7 @@ SDBMS::EditStudentDataOptions EditStudentDataMenu()
 //used to create a new class object
 void AddNewClass()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Adding new class room data" << std::endl;
@@ -248,7 +248,7 @@ void AddNewClass()
 
 void ShowClassData()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Showing class room data" << std::endl;
@@ -295,7 +295,7 @@ void ShowClassData()
 
 void EditExisitingClass()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Editing existing class room data" << std::endl;
@@ -355,7 +355,7 @@ void EditExisitingClass()
 //used to delete exisiting class room data from globalDataManager
 void DeleteExisitingClass()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Deleting an existing class room data" << std::endl;
@@ -410,7 +410,7 @@ void DeleteExisitingClass()
 //Adds a new student data to the current class room
 void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Adding new student data" << std::endl;
@@ -463,7 +463,7 @@ void AddNewStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> clas
 //Edits data of an existing student from a class
 void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Editing existing student data" << std::endl;
@@ -557,7 +557,7 @@ void EditExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterato
 //Delete data of an existing student from a class
 void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::iterator> classRoomItr)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::cout << "-------------------------------------------------------------------------" << std::endl;
     std::cout << "Deleteing existing student data" << std::endl;
@@ -615,7 +615,7 @@ void DeleteExisitingStudentData(std::set<std::deque<SDBMS::ClassRoomData>::itera
 //Saves the current state of globalDataManager to a binary file
 void SaveToFile()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::string fileName("savfile.sdbms");
     std::ofstream dataFile;
@@ -642,7 +642,7 @@ void SaveToFile()
 
 void InitGlobalDataManager()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     //This function will read the saved file that we saved on disk,
     //and then will filling the data from it into globalDataManager
@@ -673,7 +673,7 @@ void InitGlobalDataManager()
 
 int GetNewMarks()
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     int newMarks = 0;
     std::cout << "Enter new marks: ";
@@ -685,7 +685,7 @@ int GetNewMarks()
 //Then it will return the iterators to those class room data in globalDataManager
 std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vector<int> deleteVector)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::set<std::deque<SDBMS::ClassRoomData>::iterator> itrList;
 
@@ -706,7 +706,7 @@ std::set<std::deque<SDBMS::ClassRoomData>::iterator> ClassRoomLocator(std::vecto
 
 bool IsStringValid(std::string userInput)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     bool isValid = true;
 
@@ -723,7 +723,7 @@ bool IsStringValid(std::string userInput)
 
 std::vector<int> ExtractIntsFromString(const std::string &userInputString)
 {
-    *logger <<__FUNCTION__;
+    DUMP_FUNCTION_INFO
 
     std::vector<int> intsVector(0, 0);
 
