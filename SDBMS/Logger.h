@@ -8,12 +8,13 @@ namespace SDBMS
 {
     class Logger
     {
-        std::ofstream logFile;
+        std::ofstream logFile; //output stream object to handle the log file
         Logger();
     public:
         static Logger* CreateLogger();
-        void operator << (std::string dumpString);
-        void operator << (const int&);
+
+        std::string operator << (std::string dumpString); //overload to dump string into log file
+        void operator << (const int&); //overload to dump int into log file
         ~Logger();
     };
 }
