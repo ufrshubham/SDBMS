@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <fstream>
 #include "Logger.h"
+#include "ReadWrite.h"
 
 SDBMS::MainMenuOptions MainMenu();
 SDBMS::EditMenuOptions EditMenu(bool isMinimal);
@@ -40,6 +41,7 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 int main()
 {
 	SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
+
 	//try
 	//{
 	//    InitGlobalDataManager();
@@ -76,7 +78,7 @@ int main()
 			DeleteExisitingClass();
 			break;
 		case SDBMS::Save:
-			//SaveToFile();
+			SaveToFile();
 			break;
 		case SDBMS::Save_Exit:
 			break;
@@ -609,17 +611,36 @@ void SaveToFile()
 	std::ofstream dataFile;
 	dataFile.open(fileName, std::ios::binary);
 
+
+    // To write the data into binary files
+   
 	if (dataFile.is_open())
-	{
-		char* classData = nullptr;
+    {
+        SDBMS::ReadWrite obj;
 
 		for (auto itr : globalDataManager)
 		{
-			classData = reinterpret_cast<char*>(new SDBMS::ClassRoomData(itr));
-
-			dataFile.write(classData, sizeof(SDBMS::ClassRoomData));
+			int NoOfClassRoom = 0;
+			int NoOfStudents = 0;
+			++NoOfClassRoom;
+			auto studentItr = itr.GetStudentsData();
+			for (auto i = studentItr->begin(); i != studentItr->end(); ++i)
+			{
+				++NoOfStudents;
+				obj.mClassRommNumber = itr.GetClassRoomNumber();
+				obj.mStudentName = i->GetName();
+				obj.mRollNo = i->GetRollNumber();
+				auto mrkItr = i->GetSubjectMarks();
+				obj.mEnglish = mrkItr->mEnglish;
+				obj.mChemistry = mrkItr->mChemistry;
+				obj.mMaths = mrkItr->mMaths;
+				obj.mPhysics = mrkItr->mPhysics;
+				obj.mCompSci = mrkItr->mCompSci;
+				obj.mNoOfClassRoom = NoOfClassRoom;
+				obj.mNoOfStudents = NoOfStudents;
+				dataFile.write((char *)&obj, sizeof(obj));
+			}
 		}
-		delete[] classData;
 	}
 	else
 	{
@@ -645,16 +666,37 @@ void InitGlobalDataManager()
 
 	if (dataFile.is_open())
 	{
-		char* classData = new char[sizeof(SDBMS::ClassRoomData)];
+        SDBMS::ReadWrite obj;
 
-		while (!dataFile.eof())
-		{
-			dataFile.read(classData, sizeof(SDBMS::ClassRoomData));
+        while (!dataFile.eof())
+        {
+            dataFile.read((char *)&obj, sizeof(obj));
 
-			//globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
-		}
+            for (int i = 0; i < obj.mNoOfClassRoom; i++)
+            {
+                SDBMS::SubjectMarks smrk;
+                SDBMS::ClassRoomData cls(obj.mClassRommNumber, obj.mNoOfStudents);
 
-		delete[] classData;
+                for (auto itr = cls.GetStudentsData()->begin(); itr != cls.GetStudentsData()->end(); ++itr)
+                {
+                    itr->SetName(obj.mStudentName);
+                    itr->SetRollNumber(obj.mRollNo);
+                    smrk.mEnglish = obj.mEnglish;
+                    smrk.mChemistry = obj.mChemistry;
+                    smrk.mCompSci = obj.mCompSci;
+                    smrk.mMaths = obj.mMaths;
+                    smrk.mPhysics = obj.mPhysics;
+                    itr->SetSubjectMarks(smrk);
+                }
+
+                globalDataManager.push_back(cls);
+            }
+
+        }
+
+
+
+
 	}
 	else
 	{
