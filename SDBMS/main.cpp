@@ -41,22 +41,21 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 int main()
 {
 	SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
+	try
+	{
+	    InitGlobalDataManager();
+	}
+	catch (...)
+	{
+	    /*SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
 
-	//try
-	//{
-	//    InitGlobalDataManager();
-	//}
-	//catch (...)
-	//{
-	//    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+	    if (log != nullptr)
+	    {
+	        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
+	    }*/
 
-	//    if (log != nullptr)
-	//    {
-	//        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
-	//    }
-
-	//    choice = SDBMS::MainMenu_Invalid_Choice;
-	//}
+	    choice = SDBMS::MainMenu_Invalid_Choice;
+	}
 
 	//Keep going until user enters invalid choice
 	while (choice != SDBMS::MainMenu_Invalid_Choice)
@@ -620,13 +619,11 @@ void SaveToFile()
 
 		for (auto itr : globalDataManager)
 		{
-			int NoOfClassRoom = 0;
-			int NoOfStudents = 0;
-			++NoOfClassRoom;
+			int NoOfClassRoom = globalDataManager.size();
+			int NoOfStudents = itr.GetNumberOfStudents();
 			auto studentItr = itr.GetStudentsData();
 			for (auto i = studentItr->begin(); i != studentItr->end(); ++i)
 			{
-				++NoOfStudents;
 				obj.mClassRommNumber = itr.GetClassRoomNumber();
 				obj.mStudentName = i->GetName();
 				obj.mRollNo = i->GetRollNumber();
@@ -637,7 +634,7 @@ void SaveToFile()
 				obj.mPhysics = mrkItr->mPhysics;
 				obj.mCompSci = mrkItr->mCompSci;
 				obj.mNoOfClassRoom = NoOfClassRoom;
-				obj.mNoOfStudents = NoOfStudents;
+                obj.mNoOfStudents = NoOfStudents;
 				dataFile.write((char *)&obj, sizeof(obj));
 			}
 		}
@@ -663,11 +660,12 @@ void InitGlobalDataManager()
 	std::string fileName("savfile.sdbms");
 	std::ifstream dataFile;
 	dataFile.open(fileName, std::ios::binary);
-
+  
+    
 	if (dataFile.is_open())
 	{
         SDBMS::ReadWrite obj;
-
+        SDBMS::SubjectMarks subMark;
         while (!dataFile.eof())
         {
             dataFile.read((char *)&obj, sizeof(obj));
@@ -677,8 +675,8 @@ void InitGlobalDataManager()
                 SDBMS::SubjectMarks smrk;
                 SDBMS::ClassRoomData cls(obj.mClassRommNumber, obj.mNoOfStudents);
 
-                for (auto itr = cls.GetStudentsData()->begin(); itr != cls.GetStudentsData()->end(); ++itr)
-                {
+                for(auto itr = cls.GetStudentsData()->begin(); itr != cls.GetStudentsData()->end(); ++itr)
+                {    
                     itr->SetName(obj.mStudentName);
                     itr->SetRollNumber(obj.mRollNo);
                     smrk.mEnglish = obj.mEnglish;
@@ -687,16 +685,12 @@ void InitGlobalDataManager()
                     smrk.mMaths = obj.mMaths;
                     smrk.mPhysics = obj.mPhysics;
                     itr->SetSubjectMarks(smrk);
+                    dataFile.read((char *)&obj, sizeof(obj));
                 }
-
                 globalDataManager.push_back(cls);
             }
 
         }
-
-
-
-
 	}
 	else
 	{
