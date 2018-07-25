@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <fstream>
 #include "Logger.h"
+#include "ReadWrite.h"
 
 SDBMS::MainMenuOptions MainMenu();
 SDBMS::EditMenuOptions EditMenu(bool isMinimal);
@@ -40,21 +41,21 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 int main()
 {
 	SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
-	//try
-	//{
-	//    InitGlobalDataManager();
-	//}
-	//catch (...)
-	//{
-	//    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+	/*try
+	{
+	    InitGlobalDataManager();
+	}
+	catch (...)
+	{
+	    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
 
-	//    if (log != nullptr)
-	//    {
-	//        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
-	//    }
+	    if (log != nullptr)
+	    {
+	        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
+	    }
 
-	//    choice = SDBMS::MainMenu_Invalid_Choice;
-	//}
+	    choice = SDBMS::MainMenu_Invalid_Choice;
+	}*/
 
 	//Keep going until user enters invalid choice
 	while (choice != SDBMS::MainMenu_Invalid_Choice)
@@ -76,7 +77,7 @@ int main()
 			DeleteExisitingClass();
 			break;
 		case SDBMS::Save:
-			//SaveToFile();
+			SaveToFile();
 			break;
 		case SDBMS::Save_Exit:
 			break;
@@ -609,17 +610,34 @@ void SaveToFile()
 	std::ofstream dataFile;
 	dataFile.open(fileName, std::ios::binary);
 
+
+    // To write the data into binary files
+    // Created a sturcture ReadWrite to dump the information of a student
 	if (dataFile.is_open())
-	{
-		char* classData = nullptr;
+    {
+        SDBMS::ReadWrite obj;
 
 		for (auto itr : globalDataManager)
 		{
-			classData = reinterpret_cast<char*>(new SDBMS::ClassRoomData(itr));
-
-			dataFile.write(classData, sizeof(SDBMS::ClassRoomData));
+			int NoOfClassRoom = globalDataManager.size();
+			int NoOfStudents = itr.GetNumberOfStudents();
+			auto studentItr = itr.GetStudentsData();
+			for (auto i = studentItr->begin(); i != studentItr->end(); ++i)
+			{
+				obj.mClassRommNumber = itr.GetClassRoomNumber();
+				obj.mStudentName = i->GetName();
+				obj.mRollNo = i->GetRollNumber();
+				auto mrkItr = i->GetSubjectMarks();
+				obj.mEnglish = mrkItr->mEnglish;
+				obj.mChemistry = mrkItr->mChemistry;
+				obj.mMaths = mrkItr->mMaths;
+				obj.mPhysics = mrkItr->mPhysics;
+				obj.mCompSci = mrkItr->mCompSci;
+				obj.mNoOfClassRoom = NoOfClassRoom;
+                obj.mNoOfStudents = NoOfStudents;
+				dataFile.write((char *)&obj, sizeof(obj));
+			}
 		}
-		delete[] classData;
 	}
 	else
 	{
@@ -642,19 +660,40 @@ void InitGlobalDataManager()
 	std::string fileName("savfile.sdbms");
 	std::ifstream dataFile;
 	dataFile.open(fileName, std::ios::binary);
-
+  
+    
 	if (dataFile.is_open())
 	{
-		char* classData = new char[sizeof(SDBMS::ClassRoomData)];
+        SDBMS::ReadWrite obj;
+        SDBMS::SubjectMarks subMark;
+        while (!dataFile.eof())
+        {
+            dataFile.read((char *)&obj, sizeof(obj));
 
-		while (!dataFile.eof())
-		{
-			dataFile.read(classData, sizeof(SDBMS::ClassRoomData));
+            for (int i = 0; i < obj.mNoOfClassRoom; i++)
+            {
+                SDBMS::SubjectMarks smrk;
+                SDBMS::ClassRoomData cls(obj.mClassRommNumber, obj.mNoOfStudents);
+                int count = 0;
+                for(auto itr = cls.GetStudentsData()->begin(); itr != cls.GetStudentsData()->end(); ++itr)
+                {    
+                    ++count;
+                    itr->SetName(obj.mStudentName);
+                    itr->SetRollNumber(obj.mRollNo);
+                    smrk.mEnglish = obj.mEnglish;
+                    smrk.mChemistry = obj.mChemistry;
+                    smrk.mCompSci = obj.mCompSci;
+                    smrk.mMaths = obj.mMaths;
+                    smrk.mPhysics = obj.mPhysics;
+                    itr->SetSubjectMarks(smrk);
+                    if (count == (obj.mNoOfStudents))
+                        break;
+                    dataFile.read((char *)&obj, sizeof(obj));
+                }
+                globalDataManager.push_back(cls);
+            }
 
-			//globalDataManager.push_back(*(reinterpret_cast<SDBMS::ClassRoomData*>(classData)));
-		}
-
-		delete[] classData;
+        }
 	}
 	else
 	{
