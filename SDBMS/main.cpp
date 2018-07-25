@@ -41,21 +41,21 @@ std::deque<SDBMS::ClassRoomData> globalDataManager;
 int main()
 {
 	SDBMS::MainMenuOptions choice = SDBMS::Exit_No_Save;
-	try
+	/*try
 	{
 	    InitGlobalDataManager();
 	}
 	catch (...)
 	{
-	    /*SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
+	    SDBMS::Logger *log = SDBMS::Logger::CreateLogger();
 
 	    if (log != nullptr)
 	    {
 	        *log << "Exception caught. Could not load data from file. \nProgram is now terminating.";
-	    }*/
+	    }
 
 	    choice = SDBMS::MainMenu_Invalid_Choice;
-	}
+	}*/
 
 	//Keep going until user enters invalid choice
 	while (choice != SDBMS::MainMenu_Invalid_Choice)
@@ -612,7 +612,7 @@ void SaveToFile()
 
 
     // To write the data into binary files
-   
+    // Created a sturcture ReadWrite to dump the information of a student
 	if (dataFile.is_open())
     {
         SDBMS::ReadWrite obj;
@@ -674,9 +674,10 @@ void InitGlobalDataManager()
             {
                 SDBMS::SubjectMarks smrk;
                 SDBMS::ClassRoomData cls(obj.mClassRommNumber, obj.mNoOfStudents);
-
+                int count = 0;
                 for(auto itr = cls.GetStudentsData()->begin(); itr != cls.GetStudentsData()->end(); ++itr)
                 {    
+                    ++count;
                     itr->SetName(obj.mStudentName);
                     itr->SetRollNumber(obj.mRollNo);
                     smrk.mEnglish = obj.mEnglish;
@@ -685,6 +686,8 @@ void InitGlobalDataManager()
                     smrk.mMaths = obj.mMaths;
                     smrk.mPhysics = obj.mPhysics;
                     itr->SetSubjectMarks(smrk);
+                    if (count == (obj.mNoOfStudents))
+                        break;
                     dataFile.read((char *)&obj, sizeof(obj));
                 }
                 globalDataManager.push_back(cls);
