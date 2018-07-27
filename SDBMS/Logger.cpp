@@ -2,6 +2,12 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <chrono>
+#include <ctime>
+
+using namespace std::chrono;
+
+#define SIZE 50
 
 SDBMS::Logger::Logger()
 {
@@ -16,16 +22,31 @@ SDBMS::Logger::Logger()
 
 SDBMS::Logger* SDBMS::Logger::CreateLogger()
 {
+    //This is the common logger object
     static Logger logger;
     return &logger;
 }
 
-void SDBMS::Logger::operator<<(std::string dumpString)
+SDBMS::Logger &SDBMS::operator<<(Logger &stream, std::string dumpString)
 {
-    if (logFile.is_open())
+    GET_LOGGER
+
+    if (logger->logFile.is_open())
     {
-        logFile << dumpString << std::endl;
+        char timeNow[SIZE];
+
+        //Get the current system time
+        std::time_t currentTime = system_clock::to_time_t(system_clock::now());
+
+        //I had to wite this hack to eliminate the newline character which is present at the end of
+        //char* returned by ctime_s()        
+        ctime_s(timeNow, SIZE, &currentTime);
+        std::string timeStamp(timeNow);
+
+        logger->logFile << timeStamp.substr(0,timeStamp.length()-1) << ":" << dumpString << std::endl;
     }
+
+    return stream;
 }
 
 void SDBMS::Logger::operator<<(const int & objectId)
@@ -40,6 +61,7 @@ SDBMS::Logger::~Logger()
 {
     if (logFile.is_open())
     {
+        logFile << "Closing Logger" << std::endl;
         logFile.close();
     }
 }
