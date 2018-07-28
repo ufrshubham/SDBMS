@@ -18,6 +18,11 @@ SDBMS::Logger::Logger()
     {
         std::cout << "Could not create log file." << std::endl;
     }
+    else
+    {
+        logFile << "Logger started : ";
+        LogCurrentTime();
+    }
 }
 
 SDBMS::Logger* SDBMS::Logger::CreateLogger()
@@ -27,41 +32,50 @@ SDBMS::Logger* SDBMS::Logger::CreateLogger()
     return &logger;
 }
 
+void SDBMS::Logger::LogCurrentTime()
+{
+    char timeNow[SIZE];
+
+    //Get the current system time
+    std::time_t currentTime = system_clock::to_time_t(system_clock::now());
+
+    //I had to wite this hack to eliminate the newline character which is present at the end of
+    //char* returned by ctime_s()
+    ctime_s(timeNow, SIZE, &currentTime);
+    std::string timeStamp(timeNow);
+    logFile << timeStamp.substr(0, timeStamp.length() - 1) << std::endl;
+}
+
 SDBMS::Logger &SDBMS::operator<<(Logger &stream, std::string dumpString)
 {
     GET_LOGGER
 
     if (logger->logFile.is_open())
     {
-        char timeNow[SIZE];
-
-        //Get the current system time
-        std::time_t currentTime = system_clock::to_time_t(system_clock::now());
-
-        //I had to wite this hack to eliminate the newline character which is present at the end of
-        //char* returned by ctime_s()        
-        ctime_s(timeNow, SIZE, &currentTime);
-        std::string timeStamp(timeNow);
-
-        logger->logFile << timeStamp.substr(0,timeStamp.length()-1) << ":" << dumpString << std::endl;
+        logger->logFile << dumpString;
     }
 
     return stream;
 }
 
-void SDBMS::Logger::operator<<(const int & objectId)
+SDBMS::Logger & SDBMS::operator<<(Logger &stream, int number)
 {
-    if (logFile.is_open())
+    GET_LOGGER
+
+    if(logger->logFile.is_open())
     {
-        logFile << objectId;
+        logger->logFile << number;
     }
+
+    return stream;
 }
 
 SDBMS::Logger::~Logger()
 {
     if (logFile.is_open())
     {
-        logFile << "Closing Logger" << std::endl;
+        logFile << "Closing logger";
+        LogCurrentTime();
         logFile.close();
     }
 }

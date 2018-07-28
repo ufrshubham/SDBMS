@@ -13,12 +13,14 @@ SDBMS::StudentData::StudentData(int classRoomNumber, int rollNumber) : m_classRo
     DUMP_FUNCTION_INFO
     m_marks = { 0 };
     m_rollNumber = rollNumber;
+    DUMP_SPAWN
 }
 
 
 SDBMS::StudentData::~StudentData()
 {
     DUMP_FUNCTION_INFO
+    DUMP_DESTROY
 }
 
 int SDBMS::StudentData::GetRollNumber()

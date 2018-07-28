@@ -21,12 +21,14 @@ SDBMS::Menu::Menu()
     //and choice will be set to 0
     m_isValidToCreate = false;
     m_choice = 0;
+    DUMP_SPAWN
 }
 
 
 SDBMS::Menu::~Menu()
 {
     DUMP_FUNCTION_INFO
+    DUMP_DESTROY
 }
 
 std::vector<std::string> SDBMS::Menu::GetOptionsList()

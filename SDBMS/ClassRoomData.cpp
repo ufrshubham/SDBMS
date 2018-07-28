@@ -24,12 +24,14 @@ SDBMS::ClassRoomData::ClassRoomData(int classRoomNumber, int numberOfStudents) :
     {
         itr->SetRollNumber(++m_maxRollNumber);
     }
+    DUMP_SPAWN
 }
 
 
 SDBMS::ClassRoomData::~ClassRoomData()
 {
     DUMP_FUNCTION_INFO
+    DUMP_DESTROY
 }
 
 int SDBMS::ClassRoomData::GetClassRoomNumber()

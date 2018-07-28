@@ -6,12 +6,13 @@ namespace SDBMS
 {
     class SDBMS_BASE_CLASS
     {
-        static int objectId; //stores the objectId
+        static int maxUsedObjectId; //stores the max used objectId
+        int objectId;               //stores the object id of current object
     public:
         SDBMS_BASE_CLASS();
         ~SDBMS_BASE_CLASS();
 
-        int GetMaxObjectId(); //used to get the max object id
+        int GetObjectId(); //used to get the max object id
     };
 
 }
