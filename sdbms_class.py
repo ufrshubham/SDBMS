@@ -9,7 +9,7 @@ class SdbmsClass(SdbmsBaseClass):
         super().__init__()
         self.__class_room_number = 0
         self.__number_of_students = 0
-        self.__students = Student()
+        self.__students = []
 
     @property
     def class_room_number(self):
@@ -34,3 +34,12 @@ class SdbmsClass(SdbmsBaseClass):
     @students.setter
     def students(self, value):
         self.__students = value
+
+    def add_student(self, value):
+        """ Will add given student to this class and set sync class room number. Raises value error if value is not a
+        Student object. """
+        if isinstance(value, Student):
+            value.class_room_number = self.class_room_number
+            self.__students.append(value)
+        else:
+            raise ValueError
