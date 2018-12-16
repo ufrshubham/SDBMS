@@ -13,10 +13,10 @@ class SubjectMarks(SdbmsBaseClass):
                                 'Computer Science': 0}
 
     @property
-    def get_marks(self):
+    def marks(self):
         """ Getter for subject marks """
         return self.__subject_marks
 
-    @get_marks.setter
-    def get_marks(self, value):
+    @marks.setter
+    def marks(self, value):
         self.__subject_marks = value

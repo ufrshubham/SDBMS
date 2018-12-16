@@ -9,5 +9,6 @@ class SdbmsBaseClass(object):
         SdbmsBaseClass.__object_id += 1
         self.__id = SdbmsBaseClass.__object_id
 
-    def get_id(self):
+    @property
+    def obj_id(self):
         return self.__id
