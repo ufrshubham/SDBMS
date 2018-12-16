@@ -1,5 +1,5 @@
 
-class SdbmsBaseClass:
+class SdbmsBaseClass(object):
     """ Base class for all sdbms classes """
 
     # class wide counter
