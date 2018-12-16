@@ -65,13 +65,39 @@ class SdbmsUI(Tk):
         self.student_listbox.pack(fill=BOTH, expand=True)
         self.details_listbox.pack(fill=BOTH, expand=True)
 
+        # Bind updater functions
+        self.class_listbox.bind('<<ListboxSelect>>', self.on_class_select)
+
         # Status bar
         self.status_frame = Frame(master=self, borderwidth=1, relief=SUNKEN)
         self.status_frame.pack(side=BOTTOM, fill=X)
         self.status_line = Label(master=self.status_frame, text='Status Line')
         self.status_line.pack(fill=X, expand=True)
 
+        self.class_list_updater()
+
     def add_class(self):
         """ This method will handle the UI interactions for adding a new class """
         AddClassUI(self)
 
+    def class_list_updater(self):
+        """ Will update the listbox with latest values from core object. """
+
+        self.class_listbox.delete(0, END)
+
+        for cls in self.sdbms_core.classes:
+            self.class_listbox.insert(END, 'Class '+str(cls.class_room_number))
+
+    def on_class_select(self, evt):
+        """ This will be called whenever an item is selected from class list. """
+        index = evt.widget.curselection()
+
+        try:
+            value = evt.widget.get(index)
+        except TclError as e:
+            print(e)
+
+        self.student_listbox.delete(0, END)
+
+        # For now updating the same value from class list to student list
+        self.student_listbox.insert(END, value)

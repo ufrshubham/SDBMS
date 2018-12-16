@@ -41,6 +41,7 @@ class AddClassUI(Tk):
             new_class = SdbmsClass()
             new_class.class_room_number = class_room_number
             self.__parent.sdbms_core.add_class(new_class)
+            self.__parent.class_list_updater()
             self.__parent.deiconify()
             self.destroy()
 
