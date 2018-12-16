@@ -1,5 +1,8 @@
 from tkinter import *
 
+from add_class_ui import AddClassUI
+from sdbms_core import SdbmsCore
+
 
 def test():
     pass
@@ -14,6 +17,10 @@ class SdbmsUI(Tk):
 
     def __init__(self):
         super().__init__()
+
+        # Creates an instance of core object
+        self.sdbms_core = SdbmsCore()
+
         self.title("Student Data Management System")
         self.geometry("1000x500")
         self.resizable(0, 0)
@@ -23,7 +30,7 @@ class SdbmsUI(Tk):
 
         # File
         self.file_menu = Menu(master=self.menu_bar, tearoff=0)
-        self.file_menu.add_command(label='Add Class', command=test)
+        self.file_menu.add_command(label='Add Class', command=self.add_class)
         self.file_menu.add_command(label='Delete Class', command=test)
         self.file_menu.add_command(label='Exit', command=self.destroy)
         self.menu_bar.add_cascade(label='File', menu=self.file_menu)
@@ -63,3 +70,8 @@ class SdbmsUI(Tk):
         self.status_frame.pack(side=BOTTOM, fill=X)
         self.status_line = Label(master=self.status_frame, text='Status Line')
         self.status_line.pack(fill=X, expand=True)
+
+    def add_class(self):
+        """ This method will handle the UI interactions for adding a new class """
+        AddClassUI(self)
+
