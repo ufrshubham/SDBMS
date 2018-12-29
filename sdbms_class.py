@@ -43,3 +43,9 @@ class SdbmsClass(SdbmsBaseClass):
             self.__students.append(value)
         else:
             raise ValueError
+
+    def remove_student(self, roll_number):
+        """ Will remove student with given roll number. """
+        for student in self.students:
+            if student.roll_number == roll_number:
+                self.students.remove(student)

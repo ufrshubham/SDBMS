@@ -6,11 +6,8 @@ from add_student_ui import AddStudentUI
 from sdbms_core import SdbmsCore
 
 
-def test():
-    pass
-
-
 def show_about():
+    # TODO: Implement me !!!
     pass
 
 
@@ -99,9 +96,10 @@ class SdbmsUI(Tk):
 
         if index:
             value = self.class_listbox.get(index)
-            for i in self.sdbms_core.classes:
-                if ('Class ' + str(i)) == value:
-                    self.sdbms_core.classes.remove(i)
+            for cls in self.sdbms_core.classes:
+                if ('Class ' + str(cls.class_room_number)) == value:
+                    if messagebox.askyesno('Delete Class', 'Are you sure you want to delete selected class ?'):
+                        self.sdbms_core.remove_class(cls.class_room_number)
             self.class_list_updater()
         else:
             messagebox.showwarning('Warning', 'No class selected.')
@@ -122,7 +120,25 @@ class SdbmsUI(Tk):
             messagebox.showwarning('Warning', 'No class selected.')
 
     def delete_student(self):
-        pass
+        """ This method will be called when delete student is clicked. Selected student will be removed from it's
+        class. """
+
+        class_index = self.class_listbox.curselection()
+        student_index = self.student_listbox.curselection()
+
+        if class_index and student_index:
+            selected_class = str(self.class_listbox.get(class_index)).replace('Class ', '')
+            selected_student = self.student_listbox.get(student_index)
+
+            for cls in self.sdbms_core.classes:
+                if str(cls.class_room_number) == selected_class:
+                    for student in cls.students:
+                        if str(student.name) == selected_student:
+                            if messagebox.askyesno('Delete Student', 'Are you sure you want to remove this student ?'):
+                                cls.remove_student(student.roll_number)
+            self.student_list_updater(selected_class)
+        else:
+            messagebox.showwarning('Warning', 'No student selected.')
 
     def class_list_updater(self):
         """ Will update the listbox with latest values from core object. """

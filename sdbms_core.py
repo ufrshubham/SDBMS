@@ -19,3 +19,9 @@ class SdbmsCore(SdbmsBaseClass):
             self.classes.append(value)
         else:
             raise ValueError
+
+    def remove_class(self, class_room_number):
+        """ Will remove class with given class room number. """
+        for cls in self.classes:
+            if cls.class_room_number == class_room_number:
+                self.classes.remove(cls)
