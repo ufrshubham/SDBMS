@@ -10,7 +10,7 @@ class AddClassUI(Tk):
     def __init__(self, parent):
         super().__init__()
         self.__parent = parent
-        parent.withdraw()
+        self.__parent.withdraw()
 
         self.title('Add new class')
         self.geometry('200x75')
@@ -46,6 +46,6 @@ class AddClassUI(Tk):
             self.destroy()
 
     def on_add_class_closing(self):
-        """ Will be called with Add Class is closed. """
+        """ Will be called when Add Class is closed. """
         self.__parent.deiconify()
         self.destroy()

@@ -1,6 +1,8 @@
 from tkinter import *
+from tkinter import messagebox
 
 from add_class_ui import AddClassUI
+from add_student_ui import AddStudentUI
 from sdbms_core import SdbmsCore
 
 
@@ -30,10 +32,20 @@ class SdbmsUI(Tk):
 
         # File
         self.file_menu = Menu(master=self.menu_bar, tearoff=0)
-        self.file_menu.add_command(label='Add Class', command=self.add_class)
-        self.file_menu.add_command(label='Delete Class', command=test)
+        self.file_menu.add_command(label='New')
+        self.file_menu.add_command(label='Open')
+        self.file_menu.add_command(label='Save')
+        self.file_menu.add_command(label='Save as')
         self.file_menu.add_command(label='Exit', command=self.destroy)
         self.menu_bar.add_cascade(label='File', menu=self.file_menu)
+
+        # Edit
+        self.edit_menu = Menu(master=self.menu_bar, tearoff=0)
+        self.edit_menu.add_command(label='Add Class', command=self.add_class)
+        self.edit_menu.add_command(label='Delete Class', command=self.delete_class)
+        self.edit_menu.add_command(label='Add Student', command=self.add_student)
+        self.edit_menu.add_command(label='Delete Student', command=self.delete_student)
+        self.menu_bar.add_cascade(label='Edit', menu=self.edit_menu)
 
         # Help
         self.help_menu = Menu(master=self.menu_bar, tearoff=0)
@@ -46,7 +58,8 @@ class SdbmsUI(Tk):
         # viewer_frame holds class_list_frame, student_list_frame and details_frame
         self.viewer_frame = Frame(master=self)
         self.class_list_frame = LabelFrame(master=self.viewer_frame, text='Class List', borderwidth=1, relief=GROOVE)
-        self.student_list_frame = LabelFrame(master=self.viewer_frame, text='Student List', borderwidth=1, relief=GROOVE)
+        self.student_list_frame = LabelFrame(master=self.viewer_frame, text='Student List', borderwidth=1,
+                                             relief=GROOVE)
         self.details_frame = LabelFrame(master=self.viewer_frame, text='Details', borderwidth=1, relief=GROOVE)
 
         # Pack viewer_frame and child frames
@@ -56,8 +69,8 @@ class SdbmsUI(Tk):
         self.details_frame.pack(side=LEFT, fill=BOTH, expand=True)
 
         # List boxes for the three viewers
-        self.class_listbox = Listbox(master=self.class_list_frame)
-        self.student_listbox = Listbox(master=self.student_list_frame)
+        self.class_listbox = Listbox(master=self.class_list_frame, exportselection=False)
+        self.student_listbox = Listbox(master=self.student_list_frame, exportselection=False)
         self.details_listbox = Listbox(master=self.details_frame)
 
         # Pack child widgets of all the viewer frames
@@ -77,8 +90,39 @@ class SdbmsUI(Tk):
         self.class_list_updater()
 
     def add_class(self):
-        """ This method will handle the UI interactions for adding a new class """
+        """ This method will handle the UI interactions for adding a new class. """
         AddClassUI(self)
+
+    def delete_class(self):
+        """ This method will be called when user selects delete class from edit. """
+        index = self.class_listbox.curselection()
+
+        if index:
+            value = self.class_listbox.get(index)
+            for i in self.sdbms_core.classes:
+                if ('Class ' + str(i)) == value:
+                    self.sdbms_core.classes.remove(i)
+            self.class_list_updater()
+        else:
+            messagebox.showwarning('Warning', 'No class selected.')
+
+    def add_student(self):
+        """ This method will add a new student to selected class room. """
+
+        index = self.class_listbox.curselection()
+
+        if index:
+            value = self.class_listbox.get(index)
+            selected_class = str(value).replace('Class ', '')
+
+            for cls in self.sdbms_core.classes:
+                if str(cls.class_room_number) == selected_class:
+                    AddStudentUI(cls, self)
+        else:
+            messagebox.showwarning('Warning', 'No class selected.')
+
+    def delete_student(self):
+        pass
 
     def class_list_updater(self):
         """ Will update the listbox with latest values from core object. """
@@ -86,18 +130,24 @@ class SdbmsUI(Tk):
         self.class_listbox.delete(0, END)
 
         for cls in self.sdbms_core.classes:
-            self.class_listbox.insert(END, 'Class '+str(cls.class_room_number))
+            self.class_listbox.insert(END, 'Class ' + str(cls.class_room_number))
+
+    def student_list_updater(self, selected_class):
+        """ This method will populate student list viewer for the given class room number. """
+
+        for cls in self.sdbms_core.classes:
+            if str(cls.class_room_number) == selected_class:
+
+                self.student_listbox.delete(0, END)
+
+                for student in cls.students:
+                    self.student_listbox.insert(END, student.name)
 
     def on_class_select(self, evt):
         """ This will be called whenever an item is selected from class list. """
         index = evt.widget.curselection()
 
-        try:
+        if index:
             value = evt.widget.get(index)
-        except TclError as e:
-            print(e)
-
-        self.student_listbox.delete(0, END)
-
-        # For now updating the same value from class list to student list
-        self.student_listbox.insert(END, value)
+            class_room_number = str(value).replace('Class ', '')
+            self.student_list_updater(class_room_number)
