@@ -134,7 +134,8 @@ class SdbmsUI(Tk):
                 if str(cls.class_room_number) == selected_class:
                     for student in cls.students:
                         if str(student.name) == selected_student:
-                            if messagebox.askyesno('Delete Student', 'Are you sure you want to remove this student ?'):
+                            if messagebox.askyesno('Delete Student', f'Are you sure you want to remove student with \
+                            roll no. {student.roll_number}?'):
                                 cls.remove_student(student.roll_number)
             self.student_list_updater(selected_class)
         else:

@@ -73,7 +73,7 @@ class AddStudentUI(Tk):
         self.mainloop()
 
     def on_add_clicked(self):
-
+        """ This method will be called when Add button is clicked. """
         name = self.name_entry.get()
         roll_number = self.roll_number_entry.get()
         english = self.english_entry.get()
